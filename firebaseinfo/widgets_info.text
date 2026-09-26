@@ -1,0 +1,28 @@
+    statefulwidget has two parts
+    1)fixed information
+    2)changing info
+like:
+    Screen name → doesn't change
+    Text entered in username → change
+
+ flutter keep these two things separately
+ this createState
+ StatefulWidget is an abstract class, and createState() is its single, required abstract method.
+ so it creates a State object to manage its changing data
+ as statefulwidget is immutable Once created, its properties should not be changed.
+ But our UI needs changing data. This changing data is called state.
+ So Flutter puts it in a separate State class:
+ class _LoginViewState extends State<LoginView> {
+
+   int count = 0;
+
+   @override
+   Widget build(BuildContext context) {
+     return Text("$count");
+   }
+ }
+
+ State<LoginView>  means createState will return a state object which belogs to Loginnview
+ => _LoginViewState() "Create and return this particular state class."
+
+customclipper is a property that helps to clip a widget into any shape
