@@ -103,10 +103,11 @@ class _LoginViewState extends State<LoginView> {
             ],
           ),
         ),
+
         child: Stack(
           children: [
             // Soft decorative bubbles.
-            Positioned(top: -40, right: -30, child: _bubble(160, 0.10)),
+            Positioned(top: -70, right: -30, child: _bubble(160, 0.10)),
             Positioned(top: 90, left: -50, child: _bubble(120, 0.08)),
             SafeArea(
               bottom: false,

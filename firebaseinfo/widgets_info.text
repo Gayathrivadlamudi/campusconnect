@@ -26,3 +26,23 @@ like:
  => _LoginViewState() "Create and return this particular state class."
 
 customclipper is a property that helps to clip a widget into any shape
+so we return ClipPath which have clipper:which have clip path
+and it has child: this is the widget we want clip  getClip() int this we define the shape
+
+Transform.translate Move the widget from its normal position.Offset(x, y) tells Flutter how much to move.
+AnimatedAlign :used to create animated transitions
+allows us to move child widget from one postion to another with specified duration
+AnimatedAlign(
+
+    // Duration for the animation
+    duration: Duration(milliseconds: 500),
+
+    // Alignment of the child widget
+    alignment: Alignment.center,
+
+    // Animation curve (optional)
+    curve: Curves.easeInOut,
+
+    // The widget you want to animate
+    child: YourChildWidget(),
+)
