@@ -1,0 +1,18 @@
+firebase authententication is to identify or recognize the user
+
+and firestore is one of real time database  used to store user data
+firestore is a nosql database where we dont use tables instead we organize data in collections and documnets
+ in each collection we store documents in each document we store the data as key-value pair
+ each document has a unique document ID within its collection.
+before we need to go to firebase firestore in storage
+then create database
+first add firestore to our project
+flutter pub add cloud_firestore
+
+How does set() work?
+
+  await db.collection('users').doc(user.uid).set({
+    'uid': user.uid,
+
+"set() creates a document if it doesn't exist and replaces its contents if it already exists.
+I use it when I know the document ID, such as using a Firebase Authentication UID for a user profile."

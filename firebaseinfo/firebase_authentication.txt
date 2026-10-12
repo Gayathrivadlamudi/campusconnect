@@ -1,0 +1,17 @@
+static final FirebaseAuth _auth = FirebaseAuth.instance;
+we are getting the Firebase Authentication object and storing its reference in _auth
+_auth.signInWithEmailAndPassword(...)
+_auth.createUserWithEmailAndPassword(...)
+
+_auth.signInWithEmailAndPassword(...) this returns userCredential object
+"signInWithEmailAndPassword() returns a UserCredential object after successful login.
+ This object provides access to the authenticated user's User object through the user property.
+ From that object, I can retrieve details such as the user's unique ID, email, and display name."
+ final credential =
+     await FirebaseAuth.instance.signInWithEmailAndPassword(
+   email: _emailController.text.trim(),
+   password: _passwordController.text,
+ );
+
+ print(credential.user?.uid);
+ print(credential.user?.email);

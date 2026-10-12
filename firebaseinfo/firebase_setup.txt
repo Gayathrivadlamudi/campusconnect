@@ -69,4 +69,3 @@ WidgetsFlutterBinding.ensureInitialized(); Make sure Flutter's binding has been 
 “When we run flutterfire configure, it generates firebase_options.dart, which contains
 platform-specific Firebase configurations. DefaultFirebaseOptions.currentPlatform selects the
 Firebase configuration for the platform on which the app is currently running.”
-

@@ -46,3 +46,59 @@ AnimatedAlign(
     // The widget you want to animate
     child: YourChildWidget(),
 )
+
+GlobalKey:allows us to access the state of a widget for a form
+it used to access the form we can call  validate ,save
+validator is an arrow funtion :(val)=>{
+}
+we use regular expression to follow a particular structure
+| Symbol   | Meaning              |
+| -------- | -------------------- |
+| `^`      | Start of string (start checking from the string ^abc |
+| `$`      | End of string        |
+| `+`      | One or more          |
+| `.`      | Any character        |
+| `\.`     | Actual dot `.`       |
+| `@`      | Literal `@`          |
+| `[]`     | Character set   Match one character from a particular set.[abc]  a OR b OR c|
+| `[^...]` | NOT these characters [^@\s]|
+| `\s`     | Whitespace           |
+"RegExp is used to define a pattern for a string.
+ We can use that pattern to search, match, or validate text."
+ RegExp
+    ↓
+ Creates the pattern
+
+ hasMatch()
+    ↓
+ Checks whether the given text matches that pattern
+ !RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$'). here r means raw strings means consider the string as it is
+ dont treat \ as dart escape character without r also we can do it by using \\s
+
+
+if (!mounted) return;
+mounted is a property in state class
+if mounted is true the screen is still attached to widget tree if false it is removed from widget tree
+Step 1: User taps Sign In
+Firebase starts checking the email and password.
+Step 2: User leaves the screen
+For example, they navigate to another screen while Firebase is still processing.
+Step 3: Firebase finishes
+The original login screen may now have mounted == false.
+Step 4: The check runs
+if (!mounted) return; stops the method before it tries to update the old screen.
+
+if we dont keep this  suppose when firebase finishes ,the code contines and calls setstate() on
+disposed widget(means the screen is removed from the widget tree)
+Flutter can report an error similar to:setState() called after dispose()
+This is because the screen has already been removed, but the asynchronous method is still running.
+
+ScaffoldMessenger.of(context).showSnackBar(
+  SnackBar(
+    content: Text('Signed in successfully!'),
+  ),
+);
+ScaffoldMessenger is flutter widget which helps to diplays snackbar like notifications
+“ScaffoldMessenger is used to display SnackBars, which show temporary messages to users,
+such as login success or error messages.”
+
