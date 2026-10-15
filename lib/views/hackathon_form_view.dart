@@ -1,5 +1,6 @@
 import 'package:campusconnect/models/hackathon.dart';
 import 'package:campusconnect/utils/constants.dart';
+import 'package:campusconnect/views/hackathon_list_view.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -100,7 +101,7 @@ class _HackathonFormViewState extends State<HackathonFormView> {
     });
   }
 
-  Future<void> _save() async {
+save() async {
     FocusScope.of(context).unfocus();
     final formValid = _formKey.currentState!.validate();
     final datesValid = _startDate != null && _endDate != null;
@@ -121,11 +122,54 @@ class _HackathonFormViewState extends State<HackathonFormView> {
     setState(() => _saving = true);
     try {
       final hackthonDoc=await db.collection("hackthons").add(data);
-      print(hackthonDoc.id);
+      debugPrint('Added hackathon: ${hackthonDoc.id}');
+      // Replace the form with the list, so back goes to the admin home.
+      _showSnack('Hackathon added.', const Color(0xFF1FA463));
     } finally {
       if (mounted) setState(() => _saving = false);
     }
   }
+
+  updateChanges()async{
+    FocusScope.of(context).unfocus();
+    final formValid = _formKey.currentState!.validate();
+    final datesValid = _startDate != null && _endDate != null;
+    setState(() => _showDateError = !datesValid);
+    if (!formValid || !datesValid) {
+      _showSnack('Please fill in all required fields.', _errorColor);
+      return;
+    }
+    // Only keep the fields that differ from the original hackathon.
+    final old = _existing!;
+    final Map<String, dynamic> changes = {};
+    final title = _titleController.text.trim();
+    final description = _descriptionController.text.trim();
+    final venue = _venueController.text.trim();
+    final prize = _prizeController.text.trim();
+    if (title != old.title) changes['title'] = title;
+    if (description != old.description) changes['description'] = description;
+    if (venue != old.venue) changes['venue'] = venue;
+    if (prize != old.prize) changes['prize'] = prize;
+    if (_teamSize != old.maxTeamSize) changes['maxTeamSize'] = _teamSize;
+    if (_startDate != old.startDate) changes['startDate'] = _startDate;
+    if (_endDate != old.endDate) changes['endDate'] = _endDate;
+
+    if (changes.isEmpty) {
+      _showSnack('No changes to save.', _textMuted);
+      return;
+    }
+    setState(() => _saving = true);
+    try {
+      await db.collection("hackthons").doc(old.id).update(changes);
+      debugPrint('Updated fields: ${changes.keys.toList()}');
+      // Return to the list it was opened from; the list reloads itself.
+      Get.back();
+      _showSnack('Hackathon updated.', const Color(0xFF1FA463));
+    } finally {
+      if (mounted) setState(() => _saving = false);
+    }
+  }
+
 
   void _showSnack(String message, Color color) {
     Get.showSnackbar(GetSnackBar(
@@ -713,7 +757,9 @@ class _HackathonFormViewState extends State<HackathonFormView> {
                   child: SizedBox(
                     height: 54,
                     child: ElevatedButton(
-                      onPressed: _saving ? null : _save,
+                      onPressed: _saving
+                          ? null
+                          : (_isEdit ? updateChanges : save),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.transparent,
                         disabledBackgroundColor: Colors.transparent,

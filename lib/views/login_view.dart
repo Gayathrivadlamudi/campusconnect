@@ -61,7 +61,17 @@ class _LoginViewState extends State<LoginView> {
     if (signIn == _isSignIn) return;
     setState(() => _isSignIn = signIn);
   }
-
+//streambuilder is a flutter widget that listens to the data and updated the ui automatically
+  //Imagine your app needs to know whether a student is logged in.
+  //If the student is logged in → Show the Home Screen.
+  // If the student is not logged in → Show the Login Screen.
+  //stream:continuosly sends the updates
+  //streamBuilder:listens to the updates
+  //ui:updates the ui
+  //StreamBuilder<User?>(
+  //StreamBuilder is the Flutter widget.,User is the Firebase Authentication user type.,? means the value can also be null.
+ // stream: FirebaseAuth.instance.authStateChanges(),
+  // FirebaseAuth.instance.authStateChanges(), it is the sensor
   submit() async {
     FocusScope.of(context).unfocus();
     final formKey = _isSignIn ? _signInFormKey : _signUpFormKey;
@@ -99,7 +109,7 @@ class _LoginViewState extends State<LoginView> {
       }
       //creating new user
       else{
-        final UserCredential credential=   await auth.createUserWithEmailAndPassword(
+        final UserCredential credential=await auth.createUserWithEmailAndPassword(
           email:  _signUpEmailController.text.trim(),
           password:_signUpPasswordController.text.trim());
         // Save the user's name in their Firebase Auth profile.
@@ -200,6 +210,7 @@ class _LoginViewState extends State<LoginView> {
           'uid': user.uid,
           'name': user.displayName,
           'email': user.email,
+          'role':"student",
           'createdAt': DateTime.now(),
         });
         debugPrint('User profile saved successfully.');

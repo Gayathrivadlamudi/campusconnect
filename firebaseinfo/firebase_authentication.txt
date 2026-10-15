@@ -15,3 +15,40 @@ _auth.signInWithEmailAndPassword(...) this returns userCredential object
 
  print(credential.user?.uid);
  print(credential.user?.email);
+
+
+ Yes, for a signed-in user, the SDK handles sending the appropriate authentication credentials automatically. You don't need to manually attach the token to a Firestore request.
+ - Firebase Authentication provides a Firebase ID token (JWT).
+ - The Firestore SDK handles authentication when making requests.
+ - Firestore evaluates your security rules to decide whether to allow the request.
+
+//streambuilder is a flutter widget that listens to the data and updated the ui automatically
+  //Imagine your app needs to know whether a student is logged in.
+  //If the student is logged in → Show the Home Screen.
+  // If the student is not logged in → Show the Login Screen.
+  //stream:continuosly sends the updates
+  //streamBuilder:listens to the updates
+  //ui:updates the ui
+
+  StreamBuilder<User?>(
+  StreamBuilder is the Flutter widget.,User is the Firebase Authentication user type.,? means the value can also be null.
+
+ stream: FirebaseAuth.instance.authStateChanges(),
+ FirebaseAuth.instance.authStateChanges(), it is the sensor
+  this tells the streambuilder listen to this stream
+
+builder: (context, snapshot) {
+builder tells flutter wha ui to display
+Flutter provides these two parameters when it calls the builder:
+context provides the widget location
+snaphot contains latest stream of data When the stream emits a new value, Flutter updates the snapshot and calls the builder function again.
+
+
+FutureBuilder: Used when we want to perform an asynchronous operation and handle its result,
+ such as fetching a user's profile from Firestore.
+
+StreamBuilder: Used when we want to listen to a continuous stream of data and update the
+UI whenever new data arrives.
+
+
+
