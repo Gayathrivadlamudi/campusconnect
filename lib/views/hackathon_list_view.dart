@@ -28,8 +28,9 @@ class _HackathonListViewState extends State<HackathonListView> {
   final FirebaseFirestore db = FirebaseFirestore.instance;
 
   List<Hackathon> _hackathons = [];
-  bool _loading = true;
+  bool loading = true;
   String? _error;
+  DateTime? _selectedFilterDate;
 
   @override
   void initState() {
@@ -37,24 +38,44 @@ class _HackathonListViewState extends State<HackathonListView> {
     _loadHackathons();
   }
 
+  Future<void> getHackthonsInRange(DateTime filterDate) async {
+    setState(() {
+      loading = true;
+      _error = null;
+    });
+    try {
+      final snapshot = await db
+          .collection("hackthons")
+          .where("startDate", isGreaterThanOrEqualTo: filterDate)
+          .orderBy('startDate', descending: true)
+          .get();
+      final hackathons =
+          snapshot.docs.map((doc) => Hackathon.fromFirestore(doc)).toList();
+      setState(() => _hackathons = hackathons);
+    } catch (e) {
+      debugPrint('Load hackathons error: $e');
+      setState(() => _error = 'Could not load hackathons.');
+    } finally {
+      if (mounted) setState(() => loading = false);
+    }
+  }
+
   Future<void> _loadHackathons() async {
     setState(() {
-      _loading = true;
+      loading = true;
       _error = null;
     });
     try {
       final snapshot = await db.collection("hackthons").orderBy('startDate', descending: true).get();
       //converts each doc ino hackthon object
       final hackathons =snapshot.docs.map((doc) => Hackathon.fromFirestore(doc)).toList();
-      if (!mounted) return;
       setState(() => _hackathons = hackathons);
     } catch (e, stackTrace) {
       debugPrint('Load hackathons error: $e');
       debugPrintStack(stackTrace: stackTrace);
-      if (!mounted) return;
       setState(() => _error = 'Could not load hackathons.');
     } finally {
-      if (mounted) setState(() => _loading = false);
+      if (mounted) setState(() => loading = false);
     }
   }
 
@@ -66,13 +87,80 @@ class _HackathonListViewState extends State<HackathonListView> {
         title: Text(_isEdit ? 'Edit Hackathon' : 'Delete Hackathon'),
         backgroundColor: Constants.primaryBlue,
         foregroundColor: Colors.white,
+        actions: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            child: Center(
+              child: Material(
+                color: Colors.white.withOpacity(0.2),
+                borderRadius: BorderRadius.circular(8),
+                child: InkWell(
+                  onTap: _pickFilterDate,
+                  borderRadius: BorderRadius.circular(8),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(Icons.calendar_today, color: Colors.white, size: 18),
+                        const SizedBox(width: 8),
+                        Text(
+                          _selectedFilterDate == null
+                              ? 'Filter'
+                              : _formatDate(_selectedFilterDate),
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          if (_selectedFilterDate != null)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: Center(
+                child: Material(
+                  color: Colors.white.withOpacity(0.2),
+                  borderRadius: BorderRadius.circular(8),
+                  child: InkWell(
+                    onTap: _clearFilter,
+                    borderRadius: BorderRadius.circular(8),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(Icons.close, color: Colors.white, size: 18),
+                          const SizedBox(width: 6),
+                          const Text(
+                            'Clear',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+        ],
       ),
       body: _buildBody(),
     );
   }
 
   Widget _buildBody() {
-    if (_loading) {
+    if (loading) {
       return const Center(
         child: CircularProgressIndicator(color: Constants.primaryBlue),
       );
@@ -98,7 +186,6 @@ class _HackathonListViewState extends State<HackathonListView> {
       color: Constants.primaryBlue,
       onRefresh: _loadHackathons,
       child: _hackathons.isEmpty
-          // ListView so pull-to-refresh still works when empty.
           ? ListView(
               children: const [
                 SizedBox(height: 200),
@@ -112,12 +199,30 @@ class _HackathonListViewState extends State<HackathonListView> {
               padding: const EdgeInsets.all(20),
               itemCount: _hackathons.length,
               separatorBuilder: (_, _) => const SizedBox(height: 12),
-              itemBuilder: (context, i) => _hackathonCard(_hackathons[i]),
+              itemBuilder: (context, i) => hackathonCard(_hackathons[i]),
             ),
     );
   }
 
-  Widget _hackathonCard(Hackathon hackathon) {
+  Future<void> _pickFilterDate() async {
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: _selectedFilterDate ?? DateTime.now(),
+      firstDate: DateTime(2020),
+      lastDate: DateTime(2030),
+    );
+    if (picked != null) {
+      setState(() => _selectedFilterDate = picked);
+      await getHackthonsInRange(picked);
+    }
+  }
+
+  void _clearFilter() {
+    setState(() => _selectedFilterDate = null);
+    _loadHackathons();
+  }
+
+  Widget hackathonCard(Hackathon hackathon) {
     return Material(
       color: Colors.white,
       borderRadius: BorderRadius.circular(16),

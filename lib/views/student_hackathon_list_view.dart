@@ -28,6 +28,7 @@ class _StudentHackathonListViewState extends State<StudentHackathonListView> {
   List<Hackathon> _hackathons = [];
   bool _loading = true;
   String? _error;
+  DateTime? _selectedFilterDate;
 
   @override
   void initState() {
@@ -59,6 +60,23 @@ class _StudentHackathonListViewState extends State<StudentHackathonListView> {
     }
   }
 
+  Future<void> getHackthonsInRange(DateTime filterDate) async {
+    setState(() {
+      _loading = true;
+      _error = null;
+    });
+    try {
+      final snapshot = await db.collection("hackthons") .where("startDate", isLessThanOrEqualTo: filterDate).get();
+      final hackathons =  snapshot.docs.map((doc) => Hackathon.fromFirestore(doc)).toList();
+      setState(() => _hackathons = hackathons);
+    } catch (e) {
+      debugPrint('Load hackathons error: $e');
+      setState(() => _error = 'Could not load hackathons.');
+    } finally {
+      if (mounted) setState(() => _loading = false);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -67,6 +85,73 @@ class _StudentHackathonListViewState extends State<StudentHackathonListView> {
         title: const Text('Hackathons'),
         backgroundColor: Constants.primaryBlue,
         foregroundColor: Colors.white,
+        actions: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            child: Center(
+              child: Material(
+                color: Colors.white.withOpacity(0.2),
+                borderRadius: BorderRadius.circular(8),
+                child: InkWell(
+                  onTap: _pickFilterDate,
+                  borderRadius: BorderRadius.circular(8),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(Icons.calendar_today, color: Colors.white, size: 18),
+                        const SizedBox(width: 8),
+                        Text(
+                          _selectedFilterDate == null
+                              ? 'Filter'
+                              : _formatDate(_selectedFilterDate),
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          if (_selectedFilterDate != null)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: Center(
+                child: Material(
+                  color: Colors.white.withOpacity(0.2),
+                  borderRadius: BorderRadius.circular(8),
+                  child: InkWell(
+                    onTap: _clearFilter,
+                    borderRadius: BorderRadius.circular(8),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(Icons.close, color: Colors.white, size: 18),
+                          const SizedBox(width: 6),
+                          const Text(
+                            'Clear',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+        ],
       ),
       body: _buildBody(),
     );
@@ -83,8 +168,7 @@ class _StudentHackathonListViewState extends State<StudentHackathonListView> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(_error!,
-                style: const TextStyle(color: _textMuted, fontSize: 15)),
+            Text(_error!, style: const TextStyle(color: _textMuted, fontSize: 15)),
             const SizedBox(height: 8),
             TextButton.icon(
               onPressed: _loadHackathons,
@@ -95,28 +179,53 @@ class _StudentHackathonListViewState extends State<StudentHackathonListView> {
         ),
       );
     }
-    return RefreshIndicator(
-      color: Constants.primaryBlue,
-      onRefresh: _loadHackathons,
-      child: _hackathons.isEmpty
-          // ListView so pull-to-refresh still works when empty.
-          ? ListView(
-              children: const [
-                SizedBox(height: 200),
-                Center(
-                  child: Text('No hackathons yet. Check back soon!',
-                      style: TextStyle(color: _textMuted, fontSize: 15)),
-                ),
-              ],
-            )
-          : ListView.separated(
-              padding: const EdgeInsets.all(16),
-              itemCount: _hackathons.length,
-              separatorBuilder: (_, _) => const SizedBox(height: 12),
-              itemBuilder: (context, i) => _hackathonCard(_hackathons[i]),
-            ),
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 68.0),
+      child: RefreshIndicator(
+        color: Constants.primaryBlue,
+        onRefresh: _loadHackathons,
+        child: _hackathons.isEmpty
+            // ListView so pull-to-refresh still works when empty.
+            ? ListView(
+                children: const [
+                  SizedBox(height: 200),
+                  Center(
+                    child: Text('No hackathons yet. Check back soon!',
+                        style: TextStyle(color: _textMuted, fontSize: 15)),
+                  ),
+                ],
+              )
+            : ListView.separated(
+                padding: const EdgeInsets.all(16),
+                itemCount: _hackathons.length,
+                separatorBuilder: (_, _) => const SizedBox(height: 12),
+                itemBuilder: (context, i) => _hackathonCard(_hackathons[i]),
+              ),
+      ),
     );
   }
+
+  Future<void> _pickFilterDate() async {
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: _selectedFilterDate ?? DateTime.now(),
+      firstDate: DateTime(2020),
+      lastDate: DateTime(2030),
+    );
+    if (picked != null) {
+      setState(() => _selectedFilterDate = picked);
+      await getHackthonsInRange(picked);
+    }
+  }
+
+  void _clearFilter() {
+    setState(() => _selectedFilterDate = null);
+    _loadHackathons();
+  }
+
+  static String _formatDate(DateTime? d) => d == null
+      ? '-'
+      : '${d.day.toString().padLeft(2, '0')}/${d.month.toString().padLeft(2, '0')}/${d.year}';
 
   Widget _hackathonCard(Hackathon hackathon) {
     final start = hackathon.startDate;

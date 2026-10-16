@@ -16,3 +16,12 @@ How does set() work?
 
 "set() creates a document if it doesn't exist and replaces its contents if it already exists.
 I use it when I know the document ID, such as using a Firebase Authentication UID for a user profile."
+
+queries
+final snapshot = await FirebaseFirestore.instance
+    .collection('hackathons')
+    .where('status', isEqualTo: 'upcoming')
+    .orderBy('startDate')//.orderBy('createdAt', descending: true)
+    .limit(5)
+    .get();
+    where() — filter data,orderBy() — sort data,limit() — restrict results
