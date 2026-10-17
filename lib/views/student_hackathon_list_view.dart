@@ -158,6 +158,7 @@ class _StudentHackathonListViewState extends State<StudentHackathonListView> {
   }
 
   Widget _buildBody() {
+    final query=FirebaseFirestore.instance.collection('hackthons').orderBy('startDate');
     if (_loading) {
       return const Center(
         child: CircularProgressIndicator(color: Constants.primaryBlue),
@@ -181,28 +182,47 @@ class _StudentHackathonListViewState extends State<StudentHackathonListView> {
     }
     return Padding(
       padding: const EdgeInsets.only(bottom: 68.0),
-      child: RefreshIndicator(
-        color: Constants.primaryBlue,
-        onRefresh: _loadHackathons,
-        child: _hackathons.isEmpty
-            // ListView so pull-to-refresh still works when empty.
-            ? ListView(
-                children: const [
-                  SizedBox(height: 200),
-                  Center(
-                    child: Text('No hackathons yet. Check back soon!',
-                        style: TextStyle(color: _textMuted, fontSize: 15)),
-                  ),
-                ],
-              )
-            : ListView.separated(
-                padding: const EdgeInsets.all(16),
-                itemCount: _hackathons.length,
-                separatorBuilder: (_, _) => const SizedBox(height: 12),
-                itemBuilder: (context, i) => _hackathonCard(_hackathons[i]),
-              ),
-      ),
-    );
+      child: StreamBuilder<QuerySnapshot<Map<String,dynamic>>>(
+          stream: query.snapshots(),
+          builder: (context,snapshot){
+            if (snapshot.hasError) {
+              return const Center(
+                child: Text('Unable to load hackathons'),
+              );
+            }
+
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+            final docs = snapshot.data?.docs ?? [];
+            return docs.isEmpty
+                ? ListView(
+                    children: const [
+                      SizedBox(height: 200),
+                      Center(
+                        child: Text(
+                          'No hackathons yet. Check back soon!',
+                          style: TextStyle(color: _textMuted, fontSize: 15),
+                        ),
+                      ),
+                    ],
+                  )
+                : ListView.builder(
+                    padding: const EdgeInsets.all(16),
+                    itemCount: docs.length,
+                    itemBuilder: (context, i) => hackathonCard(
+                      Hackathon.fromFirestore(docs[i]),
+                    ),
+                  );
+            },
+          ),
+        );
+
+
+
+
   }
 
   Future<void> _pickFilterDate() async {
@@ -227,7 +247,7 @@ class _StudentHackathonListViewState extends State<StudentHackathonListView> {
       ? '-'
       : '${d.day.toString().padLeft(2, '0')}/${d.month.toString().padLeft(2, '0')}/${d.year}';
 
-  Widget _hackathonCard(Hackathon hackathon) {
+  Widget hackathonCard(Hackathon hackathon) {
     final start = hackathon.startDate;
     return Material(
       color: Colors.white,

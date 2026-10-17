@@ -22,7 +22,7 @@ _auth.signInWithEmailAndPassword(...) this returns userCredential object
  - The Firestore SDK handles authentication when making requests.
  - Firestore evaluates your security rules to decide whether to allow the request.
 
-//streambuilder is a flutter widget that listens to the data and updated the ui automatically
+//streambuilder is a flutter widget that listens to the data(stream) continously and updated the ui automatically
   //Imagine your app needs to know whether a student is logged in.
   //If the student is logged in → Show the Home Screen.
   // If the student is not logged in → Show the Login Screen.

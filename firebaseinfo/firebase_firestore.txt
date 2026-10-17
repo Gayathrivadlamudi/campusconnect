@@ -25,3 +25,38 @@ final snapshot = await FirebaseFirestore.instance
     .limit(5)
     .get();
     where() — filter data,orderBy() — sort data,limit() — restrict results
+
+
+   RealTime updates (sometimes we need to refresh the page to get the updates
+   instead of that we use StreamBuilder
+
+// Fetch the data once
+final result = FirebaseFirestore.instance
+    .collection('hackathons')
+    .get();(it only gets the data when we call)
+
+ final result=FirebaseFirestore.instance.collection("hacktons").snapshots();
+
+ this give stream(that is continously sends the updates)
+ and snapshots() in above is a firestore method that provides a stream(i.e continously sends the data)
+
+QuerySnapshot vs DocumentSnapshot
+QuerySnapshot =collection of results
+QuerySnapshot is a class in Flutter's Cloud Firestore package.
+It represents the results returned by a Firestore query.
+DocumentSnapshot → one document.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
