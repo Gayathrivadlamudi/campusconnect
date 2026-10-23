@@ -29,11 +29,18 @@ class _StudentHackathonListViewState extends State<StudentHackathonListView> {
   bool _loading = true;
   String? _error;
   DateTime? _selectedFilterDate;
+  late final Stream<QuerySnapshot<Map<String,dynamic>>> query;
 
   @override
   void initState() {
     super.initState();
     _loadHackathons();
+    //we have declared stream here because if we did in build it will create unecessary work like
+//     Flutter runs build() again.
+//     A new stream object is created.StreamBuilder sees a different stream.
+//  It may cancel the old subscription and subscribe to the new one.
+//  The new subscription can receive an initial snapshot again.
+// query=FirebaseFirestore.instance.collection('hackthons').orderBy('startDate').snapshots();
   }
 
   Future<void> _loadHackathons() async {
@@ -158,7 +165,7 @@ class _StudentHackathonListViewState extends State<StudentHackathonListView> {
   }
 
   Widget _buildBody() {
-    final query=FirebaseFirestore.instance.collection('hackthons').orderBy('startDate');
+
     if (_loading) {
       return const Center(
         child: CircularProgressIndicator(color: Constants.primaryBlue),
@@ -183,7 +190,7 @@ class _StudentHackathonListViewState extends State<StudentHackathonListView> {
     return Padding(
       padding: const EdgeInsets.only(bottom: 68.0),
       child: StreamBuilder<QuerySnapshot<Map<String,dynamic>>>(
-          stream: query.snapshots(),
+          stream: query,
           builder: (context,snapshot){
             if (snapshot.hasError) {
               return const Center(
@@ -209,12 +216,13 @@ class _StudentHackathonListViewState extends State<StudentHackathonListView> {
                       ),
                     ],
                   )
-                : ListView.builder(
+                : ListView.separated(
                     padding: const EdgeInsets.all(16),
                     itemCount: docs.length,
                     itemBuilder: (context, i) => hackathonCard(
                       Hackathon.fromFirestore(docs[i]),
                     ),
+                    separatorBuilder: (context, i) => const SizedBox(height: 12),
                   );
             },
           ),

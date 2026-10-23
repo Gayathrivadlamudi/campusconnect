@@ -42,12 +42,74 @@ final result = FirebaseFirestore.instance
 
 QuerySnapshot vs DocumentSnapshot
 QuerySnapshot =collection of results
+final result = await FirebaseFirestore.instance
+    .collection('hackathons')
+    .get();
+
+final documents = result.docs;
 QuerySnapshot is a class in Flutter's Cloud Firestore package.
 It represents the results returned by a Firestore query.
 DocumentSnapshot → one document.
+final result = await FirebaseFirestore.instance
+    .collection('hackathons')
+    .doc('hackathon001')
+    .get();
+
+if (result.exists) {
+  final data = result.data();
+}
+QuerySnapshot — represents the results of a query, which may contain multiple documents.
+Map<String, dynamic> — describes the format of the data inside each document.
+
+In Flutter/Firebase Firestore, snapshot.data()?.docs is a piece of code used to safely read a list
+of documents returned from a database query.
 
 
+When you use Firebase Authentication and Firestore together in your Flutter app, the authentication information
+is attached automatically to Firestore requests.
+You don't need to manually send Ravi's UID or token with every request.
 
+Suppose Ravi signs in:
+await FirebaseAuth.instance.signInWithEmailAndPassword(
+  email: email,
+  password: password,
+);Firebase Authentication identifies Ravi and maintains his signed-in session.
+
+Then Ravi requests hackathons:
+
+final snapshot = await FirebaseFirestore.instance
+    .collection('hackathons')
+    .get();
+
+    Behind the scenes:
+    1. Flutter sends a request to Firestore.
+    2. Firebase's SDK automatically includes the authentication information for the current signed-in user.
+    3. Firestore evaluates the security rules.
+    4. If the rules allow Ravi to read the data, Firestore returns it. Otherwise, the request is denied.
+
+
+    firestore security rules
+why we need? when ever our flutter app tries to get data from firestore ,firestore first checks the rules
+if the rules are satisfied then we get the access to data If it is false, Firestore denies it.
+
+For example, a student tries to create a hackathon. Firestore checks the rule for creating a document in the hackathons collection.
+ Since the student is not a lecturer or admin, the operation is denied.
+
+ first it checks
+ is this person signed in
+ function isSignedIn() {
+   return request.auth != null;
+ }
+Firestore receives his request with authentication information.If Ravi is signed in, request.auth contains his authentication information.
+
+    second it checks the role
+    function hasRole(role) {
+      return isSignedIn()
+        && get(
+          /databases/$(database)/documents/users/$(request.auth.uid)
+        ).data.role == role;
+    }//"Go to the users collection and get the document belonging to the currently signed-in user."
+    compares the stored role with the role passed to the function.
 
 
 
