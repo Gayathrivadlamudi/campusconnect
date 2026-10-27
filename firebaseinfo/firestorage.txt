@@ -1,0 +1,88 @@
+firebase storage is a cloud service provided by firestore that allows us to store,retrive
+ images,documents,videos
+
+first pick the image by using imagePicker
+
+final pikcer=ImagePicker()
+final XFile? file=picker.pickImage(source:ImageSource.gallery)
+if (pickedImage != null) {
+  final imageFile = File(pickedImage.path);
+}
+
+create a storage reference it is the location where we are going to store the image
+final user=FirebaseAuth.instance.currentUser!;
+final storageRef=FirebaseStorage.instance.
+ref().
+child("ProfileImages").
+child(user.uid).
+child(profile.jpg);
+
+This points to:
+profileImages/{user.uid}/profile.jpg
+You don't create the folders manually. The file is stored when you upload it.
+
+//uploading the image
+
+await storageRef.putFile(imageFile)//putFile() uploads the local file to the Storage reference.
+
+//after uplading the image ,get the url
+final downlaod_url=await storageRef.getDownloadURL() //The URL can be used to display the image in your app.
+
+//Save the URL in Firestore
+await FirebaseFirestore.instance
+    .collection('userProfiles')
+    .doc(user.uid)
+    .update({
+  'profileImageUrl': downloadUrl,
+});
+
+display the image
+Image.network(
+  downloadUrl,
+  width: 100,
+  height: 100,
+  fit: BoxFit.cover,
+);
+
+//if you want Delete the image
+await storageRef.delete();
+
+
+
+3. A basic Storage Security Rule
+match/b/{bucket}/o{}
+??//the above line tells firebase to apply rules to storage at this location
+match — matches a path.
+{bucket} — wildcard representing the bucket name.
+/o — represents the stored objects (files).
+
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /profileImages/{userId}/{fileName} {
+      allow read: if request.auth != null
+                  && request.auth.uid == userId;
+    }
+  }
+}
+
+. Handle upload errors using try-catch
+Future<void> uploadImage(File imageFile) async {
+  try {
+    final storageRef = FirebaseStorage.instance
+        .ref()
+        .child('profileImages')
+        .child('user123')
+        .child('profile.jpg');
+
+    await storageRef.putFile(imageFile);
+
+    print('Image uploaded successfully');
+  } on FirebaseException catch (e) {
+    print('Firebase error: ${e.code}');
+    print('Message: ${e.message}');
+  } catch (e) {
+    print('Unexpected error: $e');
+  }
+}

@@ -40,7 +40,7 @@ class _StudentHackathonListViewState extends State<StudentHackathonListView> {
 //     A new stream object is created.StreamBuilder sees a different stream.
 //  It may cancel the old subscription and subscribe to the new one.
 //  The new subscription can receive an initial snapshot again.
-// query=FirebaseFirestore.instance.collection('hackthons').orderBy('startDate').snapshots();
+query=FirebaseFirestore.instance.collection('hackthons').orderBy('startDate').snapshots();
   }
 
   Future<void> _loadHackathons() async {

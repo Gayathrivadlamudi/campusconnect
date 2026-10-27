@@ -1,0 +1,104 @@
+FCM(firebase cloud messaging)
+this is used to send push notifications to the user even when they are not actively using the app
+
+first add FCM to flutter
+flutter pub add firebase_messaging
+
+Topic in Firebase cloud messaging:
+topic is a group, multiples users can subscribe  to this so,instead of send notification to every device
+we send a msg to the topic and FCM distributes to every indivudail who subscribed to that topic
+
+more info:
+In Firebase Cloud Messaging, a topic is a named group of app instances that subscribe to receive the same notifications.
+ Instead of sending notifications to each device individually, the backend can send one message to a topic, and
+  FCM distributes it to subscribed devices.
+
+For example, in my CampusConnect app, I can use a topic named students. Whenever an admin adds a new hackathon,
+ a Cloud Function sends a notification to that topic, allowing subscribed student devices to receive the update.
+
+ await FirebaseMessaging.instance.subscribeToTopic('students')
+ await FirebaseMessaging.instance
+     .unsubscribeFromTopic('students');
+
+
+
+  in FCM we have to handle three app states
+
+ 1)Foreground - app is open and visible
+ 2)background- app is running but not visible
+ 3)terminated - when app is closed
+
+ 1)foreground:
+  //on foreground //this listens to the msgs coming from firebase
+    FirebaseMessaging.onMessage.listen((RemoteMessage msg){
+      print("Title :${msg.notification?.title}");
+      print("message body: ${msg.notification?.body}");
+    });
+
+2)background
+for background state firebase provides a seprate callback
+FirebaseMessaging.onBackgroundMessage(
+                    firebaseMessagingBackgroundHandler,
+                  );
+         This tells Firebase: when a background msg needs to handle then call this funtion
+ but the function need to be written above and should not depend on your widget's BuildContext or UI state.
+ as it runs in seprate isolate
+
+ 1. What happens when you open a Flutter app?, Android allocates memory (RAM) for the app's process.
+  Your Flutter code executes within that process.
+  The background handler should not perform UI navigation or update widgets directly. On Android, it runs in a separate isolate.
+
+  3)Terminated state
+
+  A. The notification arrives while the app is closed
+  for this state normal notifications are handled by os automatically just for displaying
+  You don't need to create a local notification just to display that normal background notification.
+
+  B. The student taps the notification
+  Use onMessageOpenedApp for a notification tapped while the app was in the background:
+  FirebaseMessaging.onMessageOpenedApp.listen(
+    (RemoteMessage message) {
+      print('Student tapped a notification');
+
+      final hackathonId =
+          message.data['hackathonId'];
+
+      print('Open hackathon: $hackathonId');
+
+      // Navigate to the hackathon details screen here.
+    },
+  );
+
+
+  flutter_local_notifications we add this package to show the firebase notification
+
+  FCM just delivers the msg from firebase to the device
+  local notification it displays the notifcation on device
+
+  First create a plugin instance
+  final FlutterLocalNotificationPlugin localNotification=FlutterLocalNotificationPlugin()
+//by this instance we can initialize and display notifications.
+
+//for notification icon
+can use your own custom image instead of @mipmap/ic_launcher for your Android notification icon.
+Place it in the Android drawable resource directory:
+const AndroidInitializationSettings androidInitializationSettings =
+    AndroidInitializationSettings('@mipmap/ic_launcher');
+
+    //implementing ios notification permission
+    const DarwinInitializationSettings iosInitializationSettings =
+        DarwinInitializationSettings(
+      requestAlertPermission: true, // permission for sending notification
+      requestBadgePermission: true, //permission for showing count of notification
+      requestSoundPermission: true, //permission for sound when notification arrived
+    );
+
+ //Combine platform settings Purpose: Combines Android and iOS initialization settings into one configuration object.
+    const InitializationSettings initializationSettings =
+        InitializationSettings(
+      android: androidInitializationSettings,
+      iOS: iosInitializationSettings,
+    );
+
+
+

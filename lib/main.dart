@@ -1,22 +1,25 @@
 import 'package:campusconnect/firebase_options.dart';
 import 'package:campusconnect/utils/constants.dart';
 import 'package:campusconnect/utils/init_routes.dart';
+import 'package:campusconnect/utils/notification_service.dart';
 import 'package:campusconnect/views/admin_home_view.dart';
 import 'package:campusconnect/views/login_view.dart';
 import 'package:campusconnect/views/student_home_view.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 
-void main() async{
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
   print("🔥 Firebase initialized successfully");
   runApp(const MyApp());
 }

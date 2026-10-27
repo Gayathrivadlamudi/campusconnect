@@ -1,6 +1,7 @@
 import 'package:campusconnect/utils/constants.dart';
 import 'package:campusconnect/views/login_view.dart';
 import 'package:campusconnect/views/student_hackathon_list_view.dart';
+import 'package:campusconnect/views/student_profile_view.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -118,12 +119,9 @@ class StudentHomeView extends StatelessWidget {
                     ),
                   ),
                   IconButton(
-                    tooltip: 'Logout',
-                    icon: const Icon(Icons.logout_rounded, color: Colors.white),
-                    onPressed: () async {
-                      await FirebaseAuth.instance.signOut();
-                      Get.offAllNamed(LoginView.routeName);
-                    },
+                    tooltip: 'Profile',
+                    icon: const Icon(Icons.person_rounded, color: Colors.white),
+                    onPressed: () => Get.toNamed(StudentProfileView.routeName),
                   ),
                 ],
               ),

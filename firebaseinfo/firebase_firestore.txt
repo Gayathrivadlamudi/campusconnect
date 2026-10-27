@@ -112,6 +112,30 @@ Firestore receives his request with authentication information.If Ravi is signed
     compares the stored role with the role passed to the function.
 
 
+    suppose someone wants to set the profile
+
+    FirebaseFirestore.intance.collection('userProfiles').doc(user.uid).set({  'uid': user.uid,
+                                                                              'name': 'Ravi',
+                                                                              'role': 'student',})
+
+    firestore checks the rule
+    it sees the requsest path userProfiles/Ravi123
+
+    It matches this rule:
+        match /userProfiles/{userId}  Firestore evaluates the permission
+
+
+allow create: if isSignedIn()
+              && request.auth.uid == userId
+              && request.resource.data.uid == request.auth.uid
+              && request.resource.data.role == 'student'; //Checks whether the role in the new document is "student".
+
+               request.auth.uid == userId so when request comes
+               Flutter creates:userProfiles/Ravi123
+               Firestore automatically assigns:userId = "Ravi123"
+
+               request.resource.data.uid == request.auth.uid
+               Checks whether the uid field inside the new document matches the signed-in user's UID.
 
 
 
