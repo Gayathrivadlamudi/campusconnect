@@ -20,6 +20,7 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+  await NotificationService.initializeNotification();
   print("🔥 Firebase initialized successfully");
   runApp(const MyApp());
 }

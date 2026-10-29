@@ -10,7 +10,7 @@ import '../firebase_options.dart';
 import '../models/hackathon.dart';
 import '../views/hackathon_detail_view.dart';
 
-@pragma('vm-entry-point')
+@pragma('vm:entry-point')
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage msg) async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   print('Background message received');
@@ -29,6 +29,7 @@ class NotificationService {
 
   // Initializes all notification handlers: local notification setup, permissions, and Firebase listeners
   static Future<void> initializeNotification() async {
+    print("🔔 Initializing notifications...");
     // Initialize local notifications
     const AndroidInitializationSettings androidInitializationSettings =
         AndroidInitializationSettings('@mipmap/ic_launcher');
@@ -53,29 +54,39 @@ class NotificationService {
         }
       },
     );
+    print("🔔 Local notifications initialized");
+
     // Request user permission for notifications and handle permission response
+    print("🔔 Requesting notification permissions...");
     final settings = await notificationMsg.requestPermission(
       alert: true,
       badge: true,
       sound: true,
     );
+    print("🔔 Permission status: ${settings.authorizationStatus}");
+
     if (settings.authorizationStatus == AuthorizationStatus.denied) {
-      print("permission denied");
+      print("❌ Notification permission denied");
       return;
     }
+    final fcmToken = await notificationMsg.getToken();
+
+    print('FCM Token: $fcmToken');
+    print("✅ Notification permission granted");
     // Subscribe to 'students' topic to receive targeted notifications for students
     await notificationMsg.subscribeToTopic("students");
+    print("🔔 Subscribed to 'students' topic");
 
-    // Handles notifications received while the app is in foreground - shows dialog with details
+    // Handles notifications received while the app is in foreground - shows popup notification
     FirebaseMessaging.onMessage.listen((RemoteMessage msg) async {
       print("Title :${msg.notification?.title}");
       print("message body: ${msg.notification?.body}");
+        // Show any notification, including manual announcements.
+        if (msg.notification != null) {
+          await _showLocalNotification(msg);
+        }
+      });
 
-      final hackathonId = msg.data['hackathonId'];
-      if (hackathonId != null) {
-        _showForegroundNotificationDialog(msg, hackathonId);
-      }
-    });
 
     // Handles notification taps when app is terminated/background - navigates to hackathon details
     FirebaseMessaging.onMessageOpenedApp.listen(
@@ -89,7 +100,7 @@ class NotificationService {
         if (hackathonId != null) {
           try {
             final doc = await FirebaseFirestore.instance
-                .collection('hackathons')
+                .collection('hackthons')
                 .doc(hackathonId)
                 .get();
 
@@ -106,48 +117,6 @@ class NotificationService {
         }
       },
     );
-  }
-
-  // Shows an AlertDialog when a notification arrives while app is in foreground, with options to dismiss or view details
-  static Future<void> _showForegroundNotificationDialog(
-    RemoteMessage message,
-    String hackathonId,
-  ) async {
-    try {
-      final doc = await FirebaseFirestore.instance
-          .collection('hackathons')
-          .doc(hackathonId)
-          .get();
-
-      if (doc.exists) {
-        final hackathon = Hackathon.fromFirestore(doc);
-
-        Get.dialog(
-          AlertDialog(
-            title: Text(message.notification?.title ?? 'New Hackathon'),
-            content: Text(message.notification?.body ?? 'Check out this hackathon!'),
-            actions: [
-              TextButton(
-                onPressed: () => Get.back(),
-                child: const Text('Dismiss'),
-              ),
-              TextButton(
-                onPressed: () {
-                  Get.back();
-                  Get.to(
-                    const HackathonDetailView(),
-                    arguments: hackathon,
-                  );
-                },
-                child: const Text('View Details'),
-              ),
-            ],
-          ),
-        );
-      }
-    } catch (e) {
-      print('Error showing foreground notification: $e');
-    }
   }
 
   // Displays a platform-native local notification for background messages with proper Android/iOS formatting
@@ -194,7 +163,7 @@ class NotificationService {
     if (hackathonId.isNotEmpty) {
       try {
         final doc = await FirebaseFirestore.instance
-            .collection('hackathons')
+            .collection('hackthons')
             .doc(hackathonId)
             .get();
 

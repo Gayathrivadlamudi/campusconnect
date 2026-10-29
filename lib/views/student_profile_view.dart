@@ -83,11 +83,40 @@ class _StudentProfileViewState extends State<StudentProfileView> {
     }
   }
 
-  Future<void> _pickImage() async {
+  void _showImageSourceDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Select Image Source'),
+        content: const Text('Choose where to pick your profile picture from'),
+        actions: [
+          TextButton.icon(
+            onPressed: () {
+              Navigator.pop(context);
+              _pickImage(ImageSource.camera);
+            },
+            icon: const Icon(Icons.camera_alt_rounded),
+            label: const Text('Camera'),
+          ),
+          TextButton.icon(
+            onPressed: () {
+              Navigator.pop(context);
+              _pickImage(ImageSource.gallery);
+            },
+            icon: const Icon(Icons.image_rounded),
+            label: const Text('Gallery'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _pickImage(ImageSource source) async {
     try{
       final XFile? pickedFile=await _imagePicker.pickImage(
-        source: ImageSource.gallery,
-      imageQuality: 80);
+        source: source,
+        imageQuality: 80,
+      );
       if(pickedFile!=null){
         setState(() {
           _selectedImage=File(pickedFile.path);
@@ -311,7 +340,7 @@ class _StudentProfileViewState extends State<StudentProfileView> {
               child: Column(
                 children: [
                   GestureDetector(
-                    onTap: _pickImage,
+                    onTap: _showImageSourceDialog,
                     child: Stack(
                       children: [
                         Container(
