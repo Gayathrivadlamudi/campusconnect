@@ -1,0 +1,72 @@
+first create a google play console
+
+create an android app bundle(aab) for creating aab file we need keystore file
+it is like a digital lock which secures our app so that no can tamper with it and to make sure we can safely send updates to our users in the future."
+The keystore works like a digital signature or a fingerprint.
+ It tells Google Play and the Android system exactly who built the app.
+This stops hackers from creating a fake version of your app and pretending it is yours.
+
+and before releasing the app direcly
+we do internal testing(which fast and felxible)
+by this testing we get to know issues ,any app crashes and performace of app before going to real end users
+first we add testers and next we upload the aab file and add release name and share the link
+this will be only visible to testers we added
+
+and there are closed testing and also open testing
+All three testing stages have the same goal — finding bugs before releasing your app.
+The difference is WHO gets access to test your application.
+
+Internal Testing: You add testers using their email addresses or Google Groups. Maximum 100 testers.
+Closed Testing: You create a tester list or Google Group and make the release available to those selected testers.
+You can manage multiple testing tracks and larger groups.mainly u can select testers
+Open: Wider audience can join voluntarily.
+
+
+next need to complete store requirements:this are displayed in play store
+like app name,short description ,app icon,screen shots
+and need to give info about app content also
+like privacy policy (it tells how app handles users personal info)
+Your privacy policy should explain:
+- What information you collect.
+- Why you collect it.
+- How you store and protect it.
+- Whether you share it with third parties.
+- How users can contact you about their data.
+What do you do?
+1. Create a privacy policy that accurately describes your app.
+2. Host it on a publicly accessible webpage.
+3. Add its URL in Google Play Console under the App content / Privacy Policy section.
+
+content rating: this gives info about the age group who can install like some apps may contain violence
+so it helps understand the app
+
+app access : suppose if app has login access so we need to provide login credentials
+
+Requirement	What it means
+Ads declaration	Declare whether your app contains advertisements.
+Target audience	Specify the intended age groups.
+Permissions	Explain the use of sensitive permissions where required.
+Account deletion	Provide account deletion options if users can create accounts.
+Financial features	Declare financial functionality if applicable.
+Health features	Declare health-related functionality if applicable.
+
+after upload the aab file in production
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
