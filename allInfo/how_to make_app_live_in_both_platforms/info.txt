@@ -1,5 +1,6 @@
 first create a google play console
-
+aab  It is a publishing format that contains your app's compiled code and resources.
+Google Play uses it to generate optimized APKs for different devices.
 create an android app bundle(aab) for creating aab file we need keystore file
 it is like a digital lock which secures our app so that no can tamper with it and to make sure we can safely send updates to our users in the future."
 The keystore works like a digital signature or a fingerprint.
@@ -51,6 +52,38 @@ Financial features	Declare financial functionality if applicable.
 Health features	Declare health-related functionality if applicable.
 
 after upload the aab file in production
+This is all about android
+
+iOS app relase
+
+first need to setup for new app in apple store connect
+click add and select new app
+and need to fill basics platform ,app name and configure bundle id
+andd need to prepare store metadata
+pricing and availabitlity (tells weather the app is free or not)
+uploading screenshots ,keywords,age ratings
+
+if we are doing for the first time
+we neeed to generate csr(certificae signing request from keychains access and need to upload in app developer protal
+
+and now open xcode and go to signing and capabilities tab select automatic manage signing and make sure developer team account is
+signed in and
+xcode will download these background credentails automaticaaly
+select the build destination to any ios devie
+and select product ->archeive
+once the build finishes orgnizer window appears click distrubte app -> select app store connect and choose uplaod
+and in app store connect navigate to testflight  to distrubte the app to internal qa testers
+and after in app store tab upload the scode binary and send the app to review
+
+
+
+
+
+
+
+
+
+
 
 
 

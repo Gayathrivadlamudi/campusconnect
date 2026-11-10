@@ -1,0 +1,157 @@
+App architecture means organizing the code so that it will be easier to debug or do the changes
+it will be easy to test and maintain
+
+so what does good architecture does
+maintainability : app architecture makes it easier to modify,update and fix issues easily
+ better user experience - Features can ship faster and with fewer bugs.
+ Lower cognitive load - Developers who are new to the project will be more productive in a shorter amount of time,
+ and code reviews are generally less time-consuming when code is easier to understand.
+
+
+
+ Flutter App Architecture
+ 1)separation of concerns:we divide the application into different components based on their responsibility
+ Example:
+ - View → Displays UI.
+ - ViewModel → Handles UI-related logic.
+ - Repository → Handles data operations.
+ - Service → Communicates with Firebase/API.
+
+ 2)Layered Architecture
+   Definition: Dividing an application into layers based on their responsibilities.
+
+   Remember these three layers:
+   Layer	Responsibility
+   UI	Displays information and handles user interactions
+   Logic	Handles business and presentation logic
+   Data	Fetches and stores data
+
+   Example: When a user updates their profile:
+   1. UI collects the details.
+   2. Logic validates them.
+   3. Data layer updates Firestore.
+
+3. Single Source of Truth (SSOT)
+Definition: Maintaining one authoritative source for a particular type of data.
+Imagine your application has student information:
+Student Name: Ravi
+Phone: 9876543210
+Department: CSE
+Suppose you store this information independently in three different classes:
+- ProfileScreen
+- DashboardScreen
+- ProfileViewModel
+Now the student changes their name from Ravi to Rahul.
+
+But you update only the ProfileScreen.
+
+Your DashboardScreen might still display Ravi!
+
+This creates inconsistent data.
+How does Single Source of Truth solve this?
+Use a Repository to manage the authoritative student profile data.
+
+4)Extensibility: design the code structure in a way that adding new feature becomes easy without changing many existing components
+Example: Replacing Firebase with a REST API while keeping the ViewModel unchanged.
+
+Benefits: Flexibility, scalability and easier maintenance.
+
+app architecture :
+MVVM(model - view - viewModel)
+it is structure that separates application ui ,data and presentation logic into different componenets
+
+Its main purpose is to make applications:
+- Easy to maintain.
+- Easy to test.
+- Easy to understand.
+- Easy to modify and extend.
+
+model:it represents application's data
+it describes about the data we work in our application
+For example, in a Student Login application, the student has:
+- Student ID
+- Name
+- Email
+- Department
+We can represent this information using a Dart class.
+class Student {
+  final String id;
+  final String name;
+  final String email;
+
+  Student({
+    required this.id,
+    required this.name,
+    required this.email,
+  });
+}
+For example:
+Student student = Student(
+  id: '101',
+  name: 'Ravi',
+  email: 'ravi@gmail.com',
+);
+
+
+Now student is an object containing student information.
+
+model represents the application data like it defines the structure of the data used by the application
+
+view:view is responsible for displaying the userinterface and handle user interactions
+Examples:
+- TextFields.
+- Buttons.
+- Images.
+- Login screens.
+- Profile screens.
+- Loading indicators.
+
+viewmodel: this handles the logic it acts as bridge between view and appliation data operations
+in view users enter their credetnials
+viewmodel :it recieves the login action andvalidates them and calls resepctive repositry
+after the model performs required data operations
+viewmodel recieves the result and udpdates the ui
+
+MVVM Data Flow:
+view sends users interactions to viewmodel
+viewmodel handles logic and calls repositru to perform data operations
+repo communicates with approriprate service
+and data is return to viewmodel
+viewmodel updates the view
+
+the data flow here is predectible
+Easier debugging.
+Separation of responsibilities.
+Easier testing.
+
+service:the service knows how to communicate with external system
+The Repository uses the Service to provide application-level data operations.
+
+question Your app gets student information from two sources:
+         - Firebase provides the student's name and profile photo.
+         - A REST API provides the student's marks and attendance.
+         You need to display all this information on one screen.
+
+answer: "The Repository calls Firebase Service and REST API Service to fetch the required information.
+It combines the data into a single StudentProfile model and returns it to the ViewModel.
+ The ViewModel manages the UI state and updates the View."
+
+ "MVC, MVP and MVVM all separate UI and application logic. Their main difference is how the UI communicates
+ with the logic component. MVC uses a Controller,
+  MVP uses a Presenter to communicate with the View, and MVVM uses a ViewModel that exposes UI state for the View to observe."
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

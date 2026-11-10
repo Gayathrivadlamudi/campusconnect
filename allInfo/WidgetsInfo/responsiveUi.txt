@@ -1,0 +1,165 @@
+responsive ui means the application ui should adjusts to differnet screen sizes
+1)mediaquery: mediaquery is widget that give info about screen size such as width, height.
+final width = MediaQuery.of(context).size.width;
+final height = MediaQuery.of(context).size.height;
+
+MediaQuery tells us how big the screen is,
+ whereas LayoutBuilder tells us how much space is available to a particular widget from its parent.
+LayoutBuilder(
+  builder: (context, constraints) {
+    if (constraints.maxWidth >= 500) {
+      return Row(
+        children: [
+          Container(width: 250, height: 100),
+          Container(width: 250, height: 100),
+        ],
+      );
+    }
+
+    return Column(
+      children: [
+        Container(width: 250, height: 100),
+        Container(width: 250, height: 100),
+      ],
+    );
+  },
+)
+
+Expanded:it makes the child of row,colun,flexible occupy the available remaing space
+Row(
+  children: [
+    Expanded(
+      child: Container(color: Colors.blue, height: 100),
+    ),
+    Expanded(
+      child: Container(color: Colors.red, height: 100),
+    ),
+  ],
+)
+
+4. Flexible
+Flexible allows a child to occupy available space but doesn't force it to fill all that space.
+
+Difference:
+- Expanded forces the child to fill its allocated space.
+- Flexible allows the child to use less than its allocated space.
+
+InheritedWidget helps share data with descendant widgets without passing it manually through every widget constructor.
+
+of(context)	Gets the inherited data
+Theme.of(context) allows child widgets to access the application's theme without manually passing theme data
+through every widget.
+
+"InheritedWidget is used to share data across multiple descendant widgets without passing it through every constructor. It helps avoid prop drilling.
+For example, we can share theme information or user details with multiple child widgets."
+
+
+Wrap:it moves children to the next line automatcally if there isnt enough space
+Wrap(
+  spacing: 10,
+  children: [
+    Chip(label: Text("Flutter")),
+    Chip(label: Text("Firebase")),
+    Chip(label: Text("Dart")),
+    Chip(label: Text("GetX")),
+  ],
+)
+
+
+styled widgets:
+styled widgets used to control ui appearence
+Widget	    Main use
+Container	Multiple layout and styling properties
+SizedBox	Fixed size or empty space
+Padding	    Adds space around its child
+
+Material Widgets; this are inbuilt flutter ui componenets that follow some rules provide by google
+Widget	                       Purpose
+Scaffold	                 Basic screen structure
+AppBar	                     Top navigation bar
+ElevatedButton	             Raised button
+FloatingActionButton	     Floating action button
+Drawer	                     Side navigation menu
+SnackBar	                 Temporary message
+Card	                     Displays grouped content
+BottomNavigationBar	          Navigation between sections
+
+"Scaffold is a Material Design widget that provides the basic structure of a screen in Flutter. It provides properties like AppBar,
+ body, Drawer, FloatingActionButton and BottomNavigationBar."
+
+Material app is the root widget of  application
+it provides app level theme
+navigation and routes
+App title.Material Design configuration.
+
+"AppBar is a Material widget used at the top of a screen. It displays the screen title and provides navigation
+options, action buttons and other controls."
+
+"Material Widgets follow Google's Material Design guidelines and are commonly used to create Android-style interfaces.
+Cupertino Widgets follow Apple's iOS design guidelines and are used to create iOS-style interfaces."
+
+"initState() is a inbuilt method of StatefulWidget that is called only once when the State object is created.
+ We use it to initialize variables, controllers and fetch initial data when the screen loads."
+
+ dispose(): it is triggered only once when the widget is removed from the widget tree
+  Its primary function is to release memory allocated to controllers, streams, and timers,
+
+ "setState() is a method used in StatefulWidget to notify Flutter that the state has changed.
+ Flutter then rebuilds the widget to reflect the updated data in the UI."
+
+ setState()
+ - Used in StatefulWidget.
+ - When we call setState(), Flutter schedules a rebuild of that State object's widget subtree.
+ - We manually tell Flutter when the state changes.
+
+ GetX (.obs and Obx)
+ - .obs makes a variable observable.
+ - Obx() listens to the observable variable.
+ - Whenever the observed value changes, Obx() automatically rebuilds its widget.
+
+ keys in flutter
+ keys are used to uniquely identify the widgets
+ 1)ValueKey: identifies the widget by using value
+ ListTile(
+   key: ValueKey(student.id),
+   title: Text(student.name),
+ )
+ 2)GlobalKey is a unique identifier for a widget across the entire application.
+  While standard keys (like ValueKey or UniqueKey) are only unique among siblings in the same subtree,
+
+"BuildContext represents the location of a widget in the widget tree. It helps us access information
+ about the widget's position and retrieve inherited data, such as Theme, MediaQuery and Navigator."
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

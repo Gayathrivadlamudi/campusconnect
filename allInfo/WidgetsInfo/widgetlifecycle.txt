@@ -1,0 +1,174 @@
+lifecycle describes about how state object is created,updated,destroyed
+
+createState()
+
+initState()
+
+didChangeDependencies()
+
+build()
+
+didUpdateWidget()
+
+setState()
+
+deactivate()
+
+dispose()
+
+createState();this methods is used to create state object for widget.
+we create this by using calling createState(0
+class MyPage extends StatefulWidget {
+  @override
+  _MyPageState createState() => _MyScreenState();
+}
+
+initstate():this is executed exactly once when the state object is created
+it is mainly used to intilize the varibles or calling intial api's
+
+didChangeDependencies():it is used to rebuild the widget .
+it is called immedietly when initstate() is executed
+and another time it is called when ever iherited widget it depends on updates it data
+
+build() this is used to build the ui ,it is called after state object is initlized and
+and this gets called each time when state is changed throught setstate or initsteat or didchangedependieces ro didupdatewidget
+
+deactivate(): this method is called when the state object is removed from a subtree and inserted inot other
+with the use of globalkey
+
+
+ example:import 'package:flutter/material.dart';
+
+         void main() => runApp(const MyApp());
+
+         class MyApp extends StatelessWidget {
+           const MyApp({super.key});
+
+           @override
+           Widget build(BuildContext context) {
+             return const MaterialApp(home: DeactivateDemoPage());
+           }
+         }
+
+         class DeactivateDemoPage extends StatefulWidget {
+           const DeactivateDemoPage({super.key});
+
+           @override
+           State<DeactivateDemoPage> createState() => _DeactivateDemoPageState();
+         }
+
+         class _DeactivateDemoPageState extends State<DeactivateDemoPage> {
+           // 1. Create a GlobalKey to hold onto our widget's State memory
+           final GlobalKey<_MyAlertWidgetState> _myWidgetKey = GlobalKey<_MyAlertWidgetState>();
+
+           bool _isSwapped = false;
+
+           @override
+           Widget build(BuildContext context) {
+             // 2. Create the widget instance ONCE and attach the GlobalKey
+             final myAlertWidget = MyAlertWidget(key: _myWidgetKey);
+
+             return Scaffold(
+               appBar: AppBar(title: const Text('Deactivate Demo')),
+               body: Center(
+                 child: Column(
+                   mainAxisAlignment: MainAxisAlignment.center,
+                   children: [
+                     ElevatedButton(
+                       onPressed: () => setState(() => _isSwapped = !_isSwapped),
+                       child: const Text('Swap Subtree Location'),
+                     ),
+                     const SizedBox(height: 20),
+
+                     // Subtree A: A Red Container
+                     Container(
+                       padding: const EdgeInsets.all(10),
+                       color: Colors.red.shade100,
+                       child: _isSwapped ? const Text('Subtree A is Empty') : myAlertWidget,
+                     ),
+                     const SizedBox(height: 20),
+
+                     // Subtree B: A Blue Container
+                     Container(
+                       padding: const EdgeInsets.all(10),
+                       color: Colors.blue.shade100,
+                       child: _isSwapped ? myAlertWidget : const Text('Subtree B is Empty'),
+                     ),
+                   ],
+                 ),
+               ),
+             );
+           }
+         }
+
+         // The core widget that contains a Text and an Alert Button
+         class MyAlertWidget extends StatefulWidget {
+           const MyAlertWidget({super.key});
+
+           @override
+           State<MyAlertWidget> createState() => _MyAlertWidgetState();
+         }
+
+         class _MyAlertWidgetState extends State<MyAlertWidget> {
+
+           @override
+           void deactivate() {
+             // 🌟 THIS TRiggers when you click "Swap Subtree Location"!
+             print("🚨 deactivate() called! Moving widget right now...");
+             super.deactivate();
+           }
+
+           void _showAlert() {
+             showDialog(
+               context: context,
+               builder: (context) => AlertDialog(
+                 title: const Text('Alert!'),
+                 content: const Text('You clicked the button inside the widget.'),
+                 actions: [TextButton(onPressed: () => Navigator.pop(context), child: const Text('OK'))],
+               ),
+             );
+           }
+
+           @override
+           Widget build(BuildContext context) {
+             return Column(
+               mainAxisSize: MainAxisSize.min,
+               children: [
+                 const Text('I am a text inside the widget!', style: TextStyle(fontSize: 16)),
+                 ElevatedButton(
+                   onPressed: _showAlert,
+                   child: const Text('Show Alert'),
+                 ),
+               ],
+             );
+           }
+         }
+
+
+         "When a widget is deactivated, Flutter puts it on a temporary 'pause' instead of deleting it.
+          This saves a lot of time because Flutter does not have to throw the old widget away and create a
+           brand-new one from scratch. If we use a GlobalKey to move the widget to a new place on the screen,
+            Flutter simply picks up the existing widget from memory and drops it into the new spot.
+            It completely skips the heavy work of deleting, resetting, and rebuilding the widget.
+             This keeps our app running very fast and smooth."
+
+
+   dispose();
+  it is called when a State object is permanently removed from the widget tree in Flutter
+  it clean up and remove memory allocated to resources like controllers to avoid memory leaks
+  @override
+  void dispose() {
+    // 1. Clean up and close your resources here to prevent memory leaks
+    _textController.dispose();
+    _animationController.dispose();
+    _streamSubscription.cancel();
+
+    // 2. Always call super.dispose() at the very end
+    super.dispose();
+  }
+
+  when widget leaves screen active things like controllers,streams,animations it doesnt stop running
+  and they will stay inside phones memory forever.this is called memory leak.which makes app slow
+
+  Always mention that super.dispose() must be called at the very bottom of the method. This tells Flutter,
+  "I am done cleaning up my custom things, now you can safely delete the core widget object from memory."

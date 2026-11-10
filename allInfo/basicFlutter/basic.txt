@@ -1,0 +1,35 @@
+const when we decalre a varaible as const we need to intilize at compile time
+use of const is it avoids unnecessary rebuilds
+
+final this once intilized we cannot chnage this can be initlized at runtime alos
+
+null:null safety helps to prevent unexpected crash
+like when ever app tries perform operations or read data on variable which is empty then app crashes as it throws
+error. so  phone's CPU doesn't know what to do and shuts the app down to prevent data corruption.
+
+we use .toString to print null value as text
+
+synchronous programming: here the code executed line by line if at one point it takes long time it will wait
+unitl the execution is completed before going to next line
+
+Asynchronous programming: it allows us to complete time consuming operations later while executing remiaing code
+mainly used for api calls
+
+for asynchronous programing: we use two kwyqords
+async which makes the funtion asynchronous
+await is used to wait for the result before moving to next statements
+
+try: Contains the code that might produce an error.
+catch: Handles the error if one occurs.
+finally: Executes whether an error occurs or not.
+One additional point: We can also use on to catch a specific exception type.
+that is if we want to use specific exception type we use this
+try {
+  // Risky operation
+} on FirebaseException catch (e) {
+  print(e.message);
+} catch (e) {
+  print("Something went wrong: $e");
+} finally {
+  print("Completed");
+}

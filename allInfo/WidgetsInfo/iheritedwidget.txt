@@ -1,0 +1,84 @@
+creating inherited widget
+1)create the data storage class extending InheritedWidget
+2)add a static .of() method so children can access it
+3)updateShouldNotify method to tell Flutter when to trigger updates.
+
+import 'package:flutter/material.dart';
+
+class BillingPlanProvider extends InheritedWidget {
+  // 1. Declare the data you want to pass down the tree
+  final String currentPlan;
+  final double monthlyCost;
+
+  const BillingPlanProvider({
+    super.key,
+    required this.currentPlan,
+    required this.monthlyCost,
+    required super.child, // The widget tree underneath this provider
+  });
+
+  // 2. The standard static '.of()' method so child widgets can look it up
+  static BillingPlanProvider? of(BuildContext context) {
+    return context.dependOnInheritedWidgetOfExactType<BillingPlanProvider>();
+  }
+
+  // 3. Tell Flutter whether child widgets need to trigger didChangeDependencies()
+  @override
+  bool updateShouldNotify(BillingPlanProvider oldWidget) {
+    // If the plan or cost changed, notify the dependent child widgets to redraw
+    return oldWidget.currentPlan != currentPlan || oldWidget.monthlyCost != monthlyCost;
+  }
+}
+
+
+
+
+need to inject the custom iheritedwidget at the root level
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    // Inject the custom InheritedWidget at the root level
+    return const BillingPlanProvider(
+      currentPlan: 'Premium Pro',
+      monthlyCost: 14.99,
+      child: MaterialApp(
+        home: DashboardScreen(),
+      ),
+    );
+  }
+}
+
+class DashboardScreen extends StatelessWidget {
+  const DashboardScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        // A deep child widget that needs the billing info
+        child: const SettingsPanel(),
+      ),
+    );
+  }
+}
+
+class SettingsPanel extends StatelessWidget {
+  const SettingsPanel({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    // 4. Access the data using our custom .of() method!
+    final planProvider = BillingPlanProvider.of(context);
+
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text('Your Plan: ${planProvider?.currentPlan ?? "Free"}'),
+        Text('Price: \$${planProvider?.monthlyCost ?? 0.00}/mo'),
+      ],
+    );
+  }
+}
