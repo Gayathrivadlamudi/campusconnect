@@ -33,3 +33,90 @@ try {
 } finally {
   print("Completed");
 }
+
+
+Dart's integer division (~/) returns an integer by truncating decimal parts,
+unlike regular division (/) which returns a double.
+
+Stream: it is an asynchronous data that arives overtime ,unlike future which returns single result,stream can
+produce multiple values
+we use stream for real time updates
+like firebase firestore data changes
+
+StreamController: this is used to create and manage stream
+it has two properties
+sink:used to add data into stream
+stream:used by other parts of application these listen to those events
+final controller = StreamController<String>();
+
+// Add data
+controller.sink.add("Hello");
+controller.sink.add("Welcome");
+
+// Listen to data
+controller.stream.listen((data) {
+  print(data);
+});
+
+there is two types of controllers:
+1)single subscription controller: there will be only one listener to the streamcontroller
+A second listener cannot subscribe to the same stream.
+final controller = StreamController<int>();
+
+controller.sink.add(10);
+controller.sink.add(20);
+
+controller.stream.listen((value) {
+  print(value);
+});
+
+Broadcast StreamController: it allows multiple listeners to listen the stream
+final controller = StreamController<String>.broadcast();
+
+controller.stream.listen((data) {
+  print("Listener 1: $data");
+});
+
+controller.stream.listen((data) {
+  print("Listener 2: $data");
+});
+
+controller.sink.add("User logged in");
+
+Streambuilder:it is a flutter widget that listens to the stream and updates the ui if there is any data change
+
+A Future gives a single result after an asynchronous operation completes, whereas a Stream provides multiple results over time. For example, fetching a student's profile once uses a Future,
+while continuously listening to updates like adding events or annouceetsfrom Firebase or backenduses a Stream."
+
+FutureBuilder:it is a flutterWidget that rebuilds the ui based on the result of future
+vIt is useful when we fetch data once from an API or Firebase.
+
+
+it is flutterwidget that listens to data which occurs exactly once and updtes the ui
+
+FutureBuilder<DocumentSnapshot>(
+  future: FirebaseFirestore.instance
+      .collection('students')
+      .doc('123')
+      .get(),
+
+  builder: (context, snapshot) {
+
+    if (snapshot.connectionState == ConnectionState.waiting) {
+      return CircularProgressIndicator();
+    }
+
+    if (snapshot.hasError) {
+      return Text("Something went wrong");
+    }
+
+    if (snapshot.hasData && snapshot.data!.exists) {
+      final data = snapshot.data!.data()
+          as Map<String, dynamic>;
+
+      return Text("Name: ${data['name']}");
+    }
+
+    return Text("No student found");
+  },
+)
