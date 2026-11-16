@@ -1,0 +1,27 @@
+why we need json esacape: some times backend dev send the response like
+json inside json so they use escape characters
+{
+  "status": true,
+  "data": "{\"name\":\"Gayathri\",\"city\":\"Hyderabad\"}"
+}status is a normal JSON value.
+ data is a string containing another JSON object.
+ we can unescape them by final studentData = jsonDecode(responseData['data']);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+API: application programming interface
+it acts like bridge between frontend and backend helps to communiacate data
+we send request to backend with the help of api and get reposnse back
+and perform operations such as fetching, creating, updating and deleting data."

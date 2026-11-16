@@ -108,7 +108,6 @@ class RoleBasedHome extends StatelessWidget {
         if (snapshot.hasData && snapshot.data!.exists) {
           return const StudentHomeView();
         }
-
         // Check adminProfiles collection
         return FutureBuilder<DocumentSnapshot>(
           future: FirebaseFirestore.instance

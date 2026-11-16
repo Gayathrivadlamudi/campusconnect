@@ -1,0 +1,66 @@
+stack it is a flutter widgets helps us to place multiple widget on top of each other
+position:it is used inside a stack to control the exact position of a child widget
+Property	       Purpose
+top	              Distance from top
+bottom	          Distance from bottom
+left	          Distance from left
+right	           Distance from right
+width	          Width of child
+height	           Height of child
+
+
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(const MaterialApp(
+    debugShowCheckedModeBanner: false,
+    home: ProfileScreen(),
+  ));
+}
+
+class ProfileScreen extends StatelessWidget {
+  const ProfileScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Student Profile"),
+      ),
+
+      body: Center(
+        child: Stack(
+          children: [
+
+            // Profile image
+            const CircleAvatar(
+              radius: 60,
+              backgroundColor: Colors.blue,
+              child: Icon(
+                Icons.person,
+                size: 70,
+                color: Colors.white,
+              ),
+            ),
+
+            // Edit icon positioned over image
+            Positioned(
+              bottom: 0,
+              right: 0,
+              child: CircleAvatar(
+                radius: 20,
+                backgroundColor: Colors.orange,
+                child: Icon(
+                  Icons.edit,
+                  color: Colors.white,
+                  size: 20,
+                ),
+              ),
+            ),
+
+          ],
+        ),
+      ),
+    );
+  }
+}

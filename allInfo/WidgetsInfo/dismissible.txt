@@ -1,0 +1,82 @@
+dismissble: it is a flutter widget used to remove item from list by swiping left or right directly
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(const MaterialApp(
+    debugShowCheckedModeBanner: false,
+    home: StudentAnnouncements(),
+  ));
+}
+
+class StudentAnnouncements extends StatefulWidget {
+  const StudentAnnouncements({super.key});
+
+  @override
+  State<StudentAnnouncements> createState() =>
+      _StudentAnnouncementsState();
+}
+
+class _StudentAnnouncementsState
+    extends State<StudentAnnouncements> {
+
+  List<String> announcements = [
+    "Exam timetable released",
+    "College fest registration open",
+    "Assignment submission tomorrow",
+    "Workshop scheduled on Friday",
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Announcements"),
+      ),
+body:listview.builder(
+itemCount:announcements.length,
+itemBuilder:(context,i){
+return Dismissible(
+key:ValueKey(announcements[i]),
+direction:DismissibleDirection.endToStart,
+background: Container(
+              color: Colors.red,
+              alignment: Alignment.centerRight,
+              padding: const EdgeInsets.only(right: 20),
+              child: const Icon(
+                Icons.delete,
+                color: Colors.white,
+              ),
+            ),
+onDismissed:(direction){
+String removedItem=announcements[i];
+setState({
+announcements.removeAt(i)
+}
+})
+}
+   ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text("$removedItem dismissed"),
+                ),
+              );
+               child: ListTile(
+                            leading: const Icon(Icons.notifications),
+                            title: Text(announcements[index]),
+                          ),
+                        );
+      },
+      ),
+    );
+  }
+}
+
+Property	                    Purpose
+key                      	Uniquely identifies each item
+direction	                Controls swipe direction
+background	                Widget shown behind while swiping
+onDismissed	                Callback after dismissal
+child	                    Widget that can be dismissed
+confirmDismiss	            Allows confirmation before dismissal
+
+    key:ValueKey(announcements[i])
+    this key helps us to identofy each list item uniquely which help to rmove items correclty

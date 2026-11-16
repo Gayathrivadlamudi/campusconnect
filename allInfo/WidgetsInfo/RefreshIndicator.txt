@@ -1,0 +1,67 @@
+it used to refresh the page when user pull down the scrollable page
+. onRefresh
+Called when the user pulls down.
+Must return a Future<void>.
+The refresh indicator disappears when that Future completes.
+
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(const MaterialApp(
+    debugShowCheckedModeBanner: false,
+    home: AttendanceScreen(),
+  ));
+}
+
+class AttendanceScreen extends StatefulWidget {
+  const AttendanceScreen({super.key});
+
+  @override
+  State<AttendanceScreen> createState() =>
+      _AttendanceScreenState();
+}
+
+class _AttendanceScreenState extends State<AttendanceScreen> {
+
+  List<String> attendance = [
+    "Monday - Present",
+    "Tuesday - Present",
+    "Wednesday - Absent",
+  ];
+
+  // Simulate fetching updated attendance
+  Future<void> refreshAttendance() async {
+    await Future.delayed(const Duration(seconds: 2));
+
+    setState(() {
+      attendance.add("Thursday - Present");
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Attendance"),
+      ),
+
+      body: RefreshIndicator(
+        onRefresh: refreshAttendance,
+
+        child: ListView.builder(
+          physics: const AlwaysScrollableScrollPhysics(),
+          itemCount: attendance.length,
+
+          itemBuilder: (context, index) {
+            return ListTile(
+              leading: const Icon(Icons.calendar_today),
+              title: Text(attendance[index]),
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
+v"onRefresh returns a Future<void> because refreshing involves asynchronous operations, such as fetching data from an API or Firebase.
+    Flutter waits for that Future to complete before hiding the refresh indicator."

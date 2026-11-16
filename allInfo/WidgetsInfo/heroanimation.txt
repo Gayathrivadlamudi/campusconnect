@@ -1,0 +1,76 @@
+"Hero animation is a Flutter animation used to create a smooth transition of a widget between two screens
+. We wrap the matching widgets with Hero and provide the same unique tag on both screens. Flutter automatically
+animates the widget from its position and size on the first screen to its position and size on the second screen."
+
+
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(const MaterialApp(
+    debugShowCheckedModeBanner: false,
+    home: FirstScreen(),
+  ));
+}
+
+class FirstScreen extends StatelessWidget {
+  const FirstScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text("Student Profile")),
+
+      body: Center(
+        child: GestureDetector(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const SecondScreen(),
+              ),
+            );
+          },
+
+          child: const Hero(
+            tag: 'student-image',
+            child: CircleAvatar(
+              radius: 50,
+              backgroundColor: Colors.blue,
+              child: Icon(
+                Icons.person,
+                size: 60,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class SecondScreen extends StatelessWidget {
+  const SecondScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text("Full Profile")),
+
+      body: const Center(
+        child: Hero(
+          tag: 'student-image',
+          child: CircleAvatar(
+            radius: 150,
+            backgroundColor: Colors.blue,
+            child: Icon(
+              Icons.person,
+              size: 180,
+              color: Colors.white,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}

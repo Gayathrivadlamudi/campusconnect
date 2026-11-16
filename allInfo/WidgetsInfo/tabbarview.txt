@@ -1,0 +1,145 @@
+Tabbar: it displays a row of tabs where user can select to switch to other tabs
+tabbar view: this actually display the content of each tabbar
+there is
+DefaultTabController:manages the tab selection automatically
+that is it connects tab and tabbarview without creating a seprate controller
+
+like return DefaultTabController(
+length:3
+child:Scaffold(
+appbar:AppBar(
+title:"hi"
+bottom:TabBar(
+tabs:[
+ Tab(
+                icon: Icon(Icons.person),
+                text: "Profile",
+              ),
+              Tab(
+                icon: Icon(Icons.calendar_month),
+                text: "Attendance",
+              ),
+              Tab(
+                icon: Icon(Icons.grade),
+                text: "Results",
+              ),
+]
+)
+)
+
+body:TabBarView(
+   children: [
+            Center(child: Text("Student Profile")),
+            Center(child: Text("Student Attendance")),
+            Center(child: Text("Student Results")),
+          ],
+)
+
+)
+if we need controll over tabs we use abcontroller
+first decalre the tabcontroller
+late TabController tabController;
+
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: StudentDashboard(),
+    );
+  }
+}
+
+class StudentDashboard extends StatefulWidget {
+  const StudentDashboard({super.key});
+
+  @override
+  State<StudentDashboard> createState() =>
+      _StudentDashboardState();
+}
+
+class _StudentDashboardState extends State<StudentDashboard>
+    with SingleTickerProviderStateMixin {
+
+  // 1. Declare TabController
+  late TabController tabController;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // 2. Initialize TabController
+    tabController = TabController(
+      length: 3,
+      vsync: this,
+    );
+  }
+
+  // 3. Navigate to Attendance tab
+  void goToAttendance() {
+    tabController.animateTo(1);
+  }
+
+  @override
+  void dispose() {
+    // 4. Release controller resources
+    tabController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Student Dashboard"),
+
+        bottom: TabBar(
+          controller: tabController,
+          tabs: const [
+            Tab(
+              icon: Icon(Icons.person),
+              text: "Profile",
+            ),
+            Tab(
+              icon: Icon(Icons.calendar_month),
+              text: "Attendance",
+            ),
+            Tab(
+              icon: Icon(Icons.grade),
+              text: "Results",
+            ),
+          ],
+        ),
+      ),
+
+      body: TabBarView(
+        controller: tabController,
+        children: const [
+          Center(child: Text("Student Profile")),
+          Center(child: Text("Student Attendance")),
+          Center(child: Text("Student Results")),
+        ],
+      ),
+
+      floatingActionButton: FloatingActionButton(
+        onPressed: goToAttendance,
+        child: const Icon(Icons.arrow_forward),
+      ),
+    );
+  }
+}
+
+  with SingleTickerProviderStateMixin this is a mixin
+  so what is mixin: it is a reusable code with this we dont use traditiopnal iheritence
+  because with traditional inheritence we can only extend one parent with this we can do multiple
+
+"It ensures the animation runs smoothly by syncing it with the device's screen refresh rate (fr
+like it provde ticker timer which runs animations smothly

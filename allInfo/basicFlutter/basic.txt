@@ -3,11 +3,59 @@ use of const is it avoids unnecessary rebuilds
 
 final this once intilized we cannot chnage this can be initlized at runtime alos
 
-null:null safety helps to prevent unexpected crash
+null:null safety(?) helps to prevent unexpected crash
 like when ever app tries perform operations or read data on variable which is empty then app crashes as it throws
 error. so  phone's CPU doesn't know what to do and shuts the app down to prevent data corruption.
 
 we use .toString to print null value as text
+
+null aware operator(??):if we know that value may return null then this is the best way to use
+it return left value if value is not null or else returns right value
+  String displayName = name ?? 'Guest';
+
+Null-aware Access operator(.?):safely accesses properties on potentially null objects, preventing runtime errors.
+ String? name = 'Dart';
+  int? length = name?.length;
+
+  String Concatenation: "hi"+" "+"Gayathri chowdary"
+  String interploation :we use $ to embed varaibles directly inside string literals
+  String message = "Language: $name, Age: $age, Version: $version";
+  String properties: .length(to get the length of string)
+  str.isEmpty and str.isNotEmpty,
+  String methods allow you to transform strings in various ways.
+   Three common methods are toLowerCase(), toUpperCase(), and trim()
+
+Lists are order collection of elements with different types
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 synchronous programming: here the code executed line by line if at one point it takes long time it will wait
 unitl the execution is completed before going to next line
@@ -120,3 +168,124 @@ FutureBuilder<DocumentSnapshot>(
     return Text("No student found");
   },
 )
+
+listview:it displays a scrollable list of items
+listview(
+children[]
+)
+
+so instead of using multiple scrollable widgets which can make scrolling difficult
+we use customscrollview which uses silverwidgets
+"CustomScrollView is used to create complex scrolling layouts. It allows us to combine different sliver widgets,
+such as an expandable app bar, a grid and a list, into one scrollable area. All these sections scroll together."
+
+
+silverAppBar:it is a flutter widget used in customsrollview it supports expandable and collapsible app
+it hass properites like
+pinned: true, Keeps the AppBar visible at the top when scrolling.
+floating: true, Makes the AppBar appear immediately when the user scrolls upward.
+flexibleSpace
+flexibleSpace: FlexibleSpaceBar(
+  title: Text("Student Dashboard"),
+  background: Image.network(
+    "https://example.com/image.jpg",
+    fit: BoxFit.cover,
+  ),
+),Allows us to add custom content or a background inside the expanded AppBar.
+
+expandedHeight: 200, Defines the height of the expanded AppBar.
+
+Scaffold(
+  body: CustomScrollView(
+    slivers: [
+
+      SliverAppBar(
+        expandedHeight: 200,
+        pinned: true,
+
+        flexibleSpace: FlexibleSpaceBar(
+          title: Text("Student Dashboard"),
+          background: Container(
+            color: Colors.blue,
+          ),
+        ),
+      ),
+
+      SliverList(
+        delegate: SliverChildBuilderDelegate(
+          (context, index) {
+            return ListTile(
+              title: Text("Student $index"),
+            );
+          },
+          childCount: 20,
+        ),
+      ),
+
+    ],
+  ),
+)
+
+silverList is used to display scrollable list of widgets
+It is similar to ListView.builder, but works with sliver-based scrolling layouts.
+SliverList(
+  delegate: SliverChildBuilderDelegate(
+    (context, index) {
+      return ListTile(
+        title: Text("Student $index"),
+      );
+    },
+    childCount: 20,
+  ),
+)
+Difference:
+ListView.builder	SliverList
+Used independently	Used inside CustomScrollView
+Creates list items  lazily	Creates list items lazily
+Uses itemBuilder	Uses SliverChildBuilderDelegate
+
+silverGrid:it is a flutter widget used inside customscrollview ,it displays the items in grid layout
+vCustomScrollView(
+   slivers: [
+
+     SliverGrid(
+      gridDelegate:
+                SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              crossAxisSpacing: 10,
+              mainAxisSpacing: 10,
+            ),
+       delegate: SliverChildBuilderDelegate(
+         (context, index) {
+           return Card(
+             child: Center(
+               child: Text("Subject $index"),
+             ),
+           );
+         },
+         childCount: 10,
+       ),
+
+
+     ),
+
+   ],
+ )
+it has properties like crossAxisCount:2
+this tells how many columns the grid should contain
+crossAxisSpacing: 10,Specifies the horizontal spacing between columns.
+mainAxisSpacing: Specifies the vertical spacing between rows.
+
+We cannot directly place a normal Container inside the slivers list because CustomScrollView expects sliver widgets.
+ We use SliverToBoxAdapter to wrap normal widgets so they can participate in the sliver scrolling layout."
+
+
+
+
+
+
+
+
+
+
+

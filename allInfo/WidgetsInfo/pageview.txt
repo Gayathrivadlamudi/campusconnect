@@ -1,0 +1,214 @@
+
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: OnboardingScreen(),
+    );
+  }
+}
+
+class OnboardingScreen extends StatefulWidget {
+  const OnboardingScreen({super.key});
+
+  @override
+  State<OnboardingScreen> createState() =>
+      _OnboardingScreenState();
+}
+
+class _OnboardingScreenState extends State<OnboardingScreen> {
+
+  // Controls page navigation Controls which page is displayed.
+  final PageController _controller = PageController();
+
+  // Stores current page index
+  int currentPage = 0;
+
+  // Onboarding content
+  final List<Map<String, dynamic>> pages = [
+    {
+      "icon": Icons.school,
+      "title": "Welcome to CampusConnect",
+      "description": "Connect with your college and stay updated.",
+      "color": Colors.blue,
+    },
+    {
+      "icon": Icons.menu_book,
+      "title": "Manage Your Academics",
+      "description": "Track attendance, assignments and exams.",
+      "color": Colors.green,
+    },
+    {
+      "icon": Icons.notifications_active,
+      "title": "Stay Updated",
+      "description": "Never miss important college announcements.",
+      "color": Colors.orange,
+    },
+  ];
+
+  // Move to next page
+  void nextPage() {
+    if (currentPage < pages.length - 1) {
+      _controller.nextPage(
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
+    } else {
+      print("Onboarding completed");
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: SafeArea(
+        child: Column(
+          children: [
+
+            // PageView
+            Expanded(
+              child: PageView.builder(
+                controller: _controller,
+                itemCount: pages.length,
+
+                onPageChanged: (index) {
+                  setState(() {
+                    currentPage = index;
+                  });
+                },
+
+                itemBuilder: (context, index) {
+
+                  final page = pages[index];
+
+                  return Padding(
+                    padding: const EdgeInsets.all(24),
+
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+
+                        Icon(
+                          page["icon"],
+                          size: 120,
+                          color: page["color"],
+                        ),
+
+                        const SizedBox(height: 40),
+
+                        Text(
+                          page["title"],
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            fontSize: 25,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+
+                        const SizedBox(height: 16),
+
+                        Text(
+                          page["description"],
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            ),
+
+            // Page indicators
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: List.generate(
+                pages.length,
+                (index) {
+                  return Container(
+                    margin: const EdgeInsets.all(4),
+                    width: currentPage == index ? 24 : 8,
+                    height: 8,
+                    decoration: BoxDecoration(
+                      color: currentPage == index
+                          ? Colors.blue
+                          : Colors.grey,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  );
+                },
+              ),
+            ),
+
+            const SizedBox(height: 30),
+
+            // Next / Get Started button
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 24,
+                vertical: 20,
+              ),
+
+              child: SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: nextPage,
+                  child: Text(
+                    currentPage == pages.length - 1
+                        ? "Get Started"
+                        : "Next",
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+PageController: Controls which page is displayed.
+PageView.builder:
+PageView.builder(
+  controller: _controller,
+  itemCount: pages.length,
+  itemBuilder: (context, index) {
+    return Text(pages[index]["title"]);
+  },
+)
+itemCount: Total number of pages.
+itemBuilder: Builds each page when needed.
+index: Current page being built.
+controller: Controls page navigation.
+
+onPageChanged
+onPageChanged: (index) {
+  setState(() {
+    currentPage = index;
+  });
+},Whenever the user swipes to another page, this callback receives the new page index.
+nextPage()
+_controller.nextPage(
+  duration: Duration(milliseconds: 300),
+  curve: Curves.easeInOut,
+);Moves to the next page programmatically.
+
