@@ -27,6 +27,188 @@ Null-aware Access operator(.?):safely accesses properties on potentially null ob
 
 Lists are order collection of elements with different types
 
+List<String> hi=['hi',1,0.3,"oj"]
+
+we can acces the elements by positional indexes and index starts from 0
+print(hi[1])  = 1
+
+we can get the length of list by using listname.length
+
+we can add elements to the list by listName.add("hiiiii")
+
+we can remove elements in list also
+listName.remove("banana")
+or we can remove element based on index also
+listName.removeAt(1);
+
+to check if list has elements or not
+listname.isEmpty
+listName.isNotEmpty
+
+to iterate through list we use for-in loop its the simple way to loop over the elements
+for (String fruit in fruits) {
+  print(fruit);
+}
+
+Maps: maps in dart are collection of key-value pairs we can access values by unique key
+Map<String,dynamic> map={
+'ap':'amaravati',
+'telanagana':'hyderabad',
+'kerala':'Thiruvananthapuram'
+};
+
+we can access the values by map['ap']
+and also we can acces like this
+
+for(var key in map.keys){
+print('${map[key]}');
+}
+
+for(var val in map.values){
+print('${val}');
+}
+
+for(var entrie in map.entries){
+print('${entri.key} and ${entrie.value}'')
+}
+print(map.length);
+print(map.keys.length);    // 3
+print(map.values.length);  // 3
+print(map.isEmpty);        // false
+print(map.isNotEmpty);     // true
+
+to check if map contains keys or not
+for(var key in map.keys){
+if(map.containsKey(key)){
+print("key exits");}
+if(map.containsValue(map[key]){
+print('values exits');
+}
+}
+
+funtion: it is a block of reusable code used to perform a specific task ,
+
+instead of this
+int add(int a,int b){
+return a+b;
+}
+we can do like
+int add(int a,int b)=>a+b;
+Arrow syntax replaces the curly braces and return with => followed by the expression.
+
+optional parameters:
+
+we can pass optional parameters into functions
+we define them by placing the parameters inside square brackets
+int calculateTotal(int quantity, [int price = 10, int tax = 2]) {
+  return quantity * price + tax;
+}
+
+void main() {
+  print(calculateTotal(5));
+  print(calculateTotal(5, 20));
+  print(calculateTotal(5, 20, 5));
+}
+
+String? title;
+if(title.isNotEmpty)
+this will not work because title may have null value
+so we do title!=null
+
+Named parameters:
+named parameters are the function where parameters are enclosed inside curly braces
+we use required keyword so the the funtion forces us to pass the argumnet when calling th function
+void function({required String? name,int? age}){
+print("${name} age is ${age}");
+}
+function(name:"Gayathri",age:22)
+
+default parameters:
+we assign the value to the parameter before ,so even if we dont send the value it will take the value we assigned
+to that parameter
+
+nullable represents absence of a value
+ By default, variables in Dart cannot be null unless explicitly allowed.
+
+String? name = null; explicity we are saying name can be null
+
+Non-nullable types in Dart are data types that guarantee a variable can never hold a null value
+
+The null assertion operator (!)
+by using this assertion opertor we are saying that the varible is not null
+he ! operator does not fix or convert a null value—it simply turns a compile-time error into a runtime check.
+ If the value turns out to be null while your app is running, Dart immediately throws a fatal exception (_CastError: Null check operator used on a null value) and crashes that execution path:
+
+late intilization : by using this late keyword we can intilize the non nullable varaible later instead of intilizing it
+immediately
+
+type conversion
+string to int
+trying parsing
+String n='43';
+int s=int.tryParse(n);
+//if string has characters then so
+int v=int.tryParse("hii")??0;
+
+//if we want strict converstion but it throws formatException if string contains characters
+int d=int.parse(n);
+
+ double.tryParse(priceText);
+ =====> convert numbers (int or double) to a String
+ count.toString();
+ use .toStringAsFixed() when you want to control the number of decimal places.
+ double pi = 3.14159;
+  print(pi.toStringAsFixed(2));     // '3.14'
+  v  print(pi.toStringAsFixed(0));     // '3' (rounds to nearest whole number)
+
+list _>accessing first and last elem
+
+List<String> planets = ['Mercury', 'Venus', 'Earth', 'Mars'];
+
+String firstPlanet = planets.first;   // 'Mercury' //gives u the first ele in the list
+String lastPlanet = planets.last;     // 'Mars'
+
+list.reversed.toList() to create a reversed copy of a list in Dart.
+
+list.reversed. gives iterable objec so we do.tolist
+fruits.insert(1, 'Orange');
+
+  List<int> numbers = [1, 2, 3, 4, 5, 6];
+
+List Removal: removeWhere
+  // Remove all even numbers
+  numbers.removeWhere((num) => num % 2 == 0);
+
+  Finding in a List: indexOf
+  Use list.indexOf(element) to find the zero-based position of the first matching item in a Dart list.
+
+  sorting
+   List<int> numbers = [40, 10, 50, 20, 30];
+    numbers.sort();
+     List<String> names = ['Charlie', 'Alice', 'Bob'];
+      names.sort();
+      print(names); // [Alice, Bob, Charlie]
+      list.shuffle() to randomly rearrange the elements of a Dart list in-place.
+       List<String> cards = ['Ace', 'King', 'Queen', 'Jack'];
+
+        cards.shuffle();
+
+        print(cards); // e.g., [Queen, Ace, Jack, King] (random order each run)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

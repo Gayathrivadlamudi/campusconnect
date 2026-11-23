@@ -25,3 +25,163 @@ API: application programming interface
 it acts like bridge between frontend and backend helps to communiacate data
 we send request to backend with the help of api and get reposnse back
 and perform operations such as fetching, creating, updating and deleting data."
+
+example: suppose we want stundet details from backend
+we send request to the api and api process the request andAPI communicates with the backend.
+Backend retrieves student information from the database.
+ and send response in json format to the frontend
+
+ RestApi:it is a way of desining api's with http methods we can communicate with servers from backend
+ httm methods are like: Get,Post,put,delete,patch
+ get: used to get retriev data
+ post: used to create or insert dataa we send data when sending request
+ put:replacing existing data
+ patch:updating partial data
+ delete: delete data
+
+
+ http status code: this are numbers returned by server which indicate result of api request
+
+ 200: staus ok Data fetched successfully
+ 201: created succesesufl
+ 204	No Content	Request successful, no response body
+
+ 400:bad request , the server cannot read or parse the request.., or bad url characters, might be json syntax
+ 401:unathorize means need authentication or invalid credentials
+ 403: forbidden User doesn't have permission need authorization
+ 404:Not Found : you request is reachable to server but the specific webpage or file or api end we are requesting doesnt exits
+"401 means authentication is required or the credentials are invalid, whereas
+403 means the user is authenticated but doesn't have sufficient permission to access the resource."
+
+
+to send api request:
+install http packgae
+flutter pub add http
+this http package allows us to communicate with api's over the internet
+
+we need to parse the url to uri object as http expects uri object instead of url
+
+final url=Uri.parse("url strng");
+final res=await http.get(url)
+
+await : to wait unitl server gives response
+the response contains three parts
+response.statusCode tells whether the request is successful or not
+response.body contains the actual data returned by server the data will be in json
+response.headers :it contains additional info about response
+
+response.body is a String containing JSON data, not yet a Dart Map.
+
+we need to convert the response form json to dart structure
+because th json over the internet is string so to access values we convert into dart object
+we can do that by final data=jsonDecode(response.body);
+and we can also do with modal class if we wnat the data in strucutured way
+
+print(data['name']);
+print(data['email']);
+print(data['address']['city']);
+but with this we need rember all the parameters exactly
+If the API has many fields, accessing everything manually becomes messy.
+
+so we use modal class we can convert the api response into dart object
+so with modal calss we create object once can access
+Model classes are used to represent API data as structured Dart objects. They help us organize data,
+ avoid repeatedly accessing JSON keys manually, improve code readability, and make it easier to pass and use data throughout the application.
+
+jsonDecode() → converts JSON String into Dart data.
+Model.fromJson() → converts the Dart Map into a structured Dart object.
+
+handling api error is also an imp thing
+
+1)no internet connection
+2)server may be down
+3)api returning error codes 400,401
+4)request takes too long
+5)json parsing
+
+using try catch we can handle the erros that occur while making a request to api
+try {
+  final response = await http.get(url);
+
+  if (response.statusCode == 200) {
+    print(response.body);
+  } else {
+    print('Request failed: ${response.statusCode}');
+  }
+}
+catch (e) {
+  print('Error: $e');
+}
+try → executes code that may cause an error.
+catch → catches an exception if one occurs.
+statusCode → checks the HTTP response returned by the server.
+
+if request is taking to much of time we use timeout method
+
+try {
+  final response = await http.get(url).timeout(
+    const Duration(seconds: 10),
+  );
+}
+on TimeoutException {
+  print('Request timed out');
+}
+catch (e) {
+  print('Something went wrong: $e');
+}
+this makes app more realible
+
+when we fetch api we need handle loading,success,error
+we can do that with async funtion or fututrebuilder
+
+We can create an asynchronous function using async and await, manage loading, success, and error states using variables, and update the UI using setState.
+FutureBuilder is a convenient widget that automatically rebuilds the UI based on the state of a Future.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
