@@ -197,20 +197,155 @@ List Removal: removeWhere
 
 
 
+Trasnforming with map: we can transform the elements without modifying th e original list
+List<int> numbers=[1,2,3];
+List new_num=[];
+new_num=   numbers.map((num)=>num*2).toList();
+
+
+Changing Data Types:
+  List<double> prices = [10.0, 25.5, 99.0];
+  // Convert numbers into formatted currency strings
+  List<String> labels = prices.map((price) => '₹${price.toStringAsFixed(2)}').toList();
+  print(labels); // [₹10.00, ₹25.50, ₹99.00]
+
+using where :by using where it keeps elements only if condition is true
+List<double> prices = [10.0, 25.5, 99.0];
+var evenPrices=prices.where((item)=>item%2==0).toList()
+
+where() method allows you to filter a list by testing each element against a condition and
+ keeping only those that pass the test.
+ example
+
+
+List<String> books = [];
+  while (true) {
+    String? book = stdin.readLineSync();
+    if (book == null || book.isEmpty) break;
+    books.add(book);
+  }
+
+  // Read book genres until empty string
+  List<String> genres = [];
+  while (true) {
+    String? genre = stdin.readLineSync();
+    if (genre == null || genre.isEmpty) break;
+    genres.add(genre);
+  }
+
+  // Read preferred genre
+  String? preferredGenre = stdin.readLineSync();
+ Use where() method to filter books by preferred genre
+   // Use toList() method to convert the filtered iterable to a list
+   var filterd_books=books.where((book){
+    var  bookInd=books.indexOf(book);
+     return genres[bookInd]==preferredGenre;
+   });
 
 
 
+   any:sometimes we need to check if atleast one element in the list satisfies the condition then we use any()
+   it return true immediatly when it finds the ele which satisfies the condition
+
+
+  //every it returns true value if every element in this list satisfies the condition
+  list.every((item)=>item%2==0);
+
+   //firstWhere() it returns the very first element in dart list that matches our condition
+    scores.firstWhere((score) => score >= 80);
+
+
+set:
+set stores unique elements and if we try to add any duplicates it ignores that and it doesnt maintain the order of elements
+
+// Set automatically removes duplicates
+Set<String> uniqueFruits = {'apple', 'banana', 'apple', 'orange'};
+print(uniqueFruits);  // {'apple', 'banana', 'orange'}
+to check if an element is present in the set ornot we use contains("value")
+
+to convert a set to list Set.from(SetNmae) ;
+and convert List to set SetName.toList();
+
+Set Union: it used to combine two sets if they have duplicates it doesnt add those elements
+Setname1.union(setName2)
+Set Union
+
+Set<String> frontendSkills = {'HTML', 'CSS', 'JavaScript'};
+Set<String> backendSkills = {'JavaScript', 'Python', 'SQL'};
+Set<String> allSkills = frontendSkills.union(backendSkills);
+print(allSkills);  // {HTML, CSS, JavaScript, Python, SQL}
+
+To find elements that appear in both sets, use the intersection() method
+Set<String> sharedSkills = frontendSkills.intersection(backendSkills);
+print(sharedSkills);  // {JavaScript}
+
+When you have two separate Set collections, you can combine them into a single set containing all unique elements from both using the union() method. This operation creates a new set that includes every element that appears in either of the original sets.
+
+The union() method automatically handles duplicates for you. If the same element exists in both sets, it will appear only once in the resulting union set, maintaining the fundamental property that sets contain only unique values.
+
+Set<String> frontendSkills = {'HTML', 'CSS', 'JavaScript'};
+Set<String> backendSkills = {'JavaScript', 'Python', 'SQL'};
+
+Set<String> allSkills = frontendSkills.union(backendSkills);
+print(allSkills);  // {HTML, CSS, JavaScript, Python, SQL}
+Notice how 'JavaScript' appears in both original sets but only once in the union result. This makes union() perfect for combining related collections while ensuring no duplicates, such as merging skill sets, combining user permissions, or consolidating data from multiple sources.
+
+To find elements that appear in both sets, use the intersection() method. It returns a new set containing only the shared elements:
+
+Set<String> sharedSkills = frontendSkills.intersection(backendSkills);
+print(sharedSkills);  // {JavaScript}
+Once you have a set of overlapping elements, you can convert it to a readable string using the join() method. This works the same way as on a List. It joins all elements into a single string with a separator you provide:
+
+Set<String> overlap = frontendSkills.intersection(backendSkills);
+String result = overlap.isEmpty ? 'None' : overlap.join(', ');
+print(result);  // JavaScript
 
 
 
+import 'dart:io';
 
+void main() {
+  // Read project name
+  String? projectName = stdin.readLineSync();
 
+  // Read first team member's skills
+  Set<String> member1Skills = <String>{};
+  String? skill;
+  while ((skill = stdin.readLineSync()) != "member1_done") {
+    if (skill != null) {
+      member1Skills.add(skill);
+    }
+  }
 
+  // Read second team member's skills
+  Set<String> member2Skills = <String>{};
+  while ((skill = stdin.readLineSync()) != "member2_done") {
+    if (skill != null) {
+      member2Skills.add(skill);
+    }
+  }
+   print("Project: $projectName");
+    print("Team Member 1 skills: $member1Skills");
+    print("Team Member 2 skills: $member2Skills");
 
+Project: Web Development Project
+Team Member 1 skills: {HTML, CSS, JavaScript, React}
+Team Member 2 skills: {JavaScript, Node.js, MongoDB, React}
+Combined project skills: {HTML, CSS, JavaScript, React, Node.js, MongoDB}
+Total unique skills available: 6
+Overlapping skills: JavaScript, React
+Status: Project skill profile created successfully
+  // TODO: Write your code below
+  // Use the union() method to combine both skill sets
+  // Find overlapping skills between the two sets
+  // Calculate total unique skills
 
-
-
-
+  // Output the results in the required format
+  print("Project: $projectName");
+  print("Team Member 1 skills: $member1Skills");
+  print("Team Member 2 skills: $member2Skills");
+  // Print combined skills, total count, overlapping skills, and status
+}
 
 
 
